@@ -1,7 +1,7 @@
 #include <BLEDevice.h>
 #include <BLE2902.h>
-#include <ServerReadCallbacks.hh>
-#include <EchoServerCallbacks.hh>
+#include <ServerReadCallbacks.h>
+#include <EchoServerCallbacks.h>
 
 #ifndef BLUETOOTH_LE_READY_LIB
 #define BLUETOOTH_LE_READY_LIB

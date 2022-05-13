@@ -1,7 +1,7 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <HardwareSerial.h>
-#include <RPiControl.hh>
+#include <hardware/RPiControl.h>
 
 extern std::string message;
 static bool messageReceivedComplete;

@@ -1,15 +1,10 @@
+#ifndef RPI_CONTROL_H
+#define RPI_CONTROL_H
 #include <esp32-hal.h>
 #include <string>
 #include <HardwareSerial.h>
 #include <map>
-
-#define RPI_PIN_16 5
-#define RPI_PIN_18 18
-#define RPI_PIN_22 19
-#define RPI_POWER_PIN 23
-
-#ifndef RASPBERRY_FUNC_HANDLER_LIB
-#define RASPBERRY_FUNC_HANDLER_LIB
+#include "../pinout.h"
 
 class RPiControl
 {

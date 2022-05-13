@@ -1,7 +1,5 @@
-#include "imuAPI.h"
-#include "errorStructs.h"
-
-extern Errors errors;
+#include "../../include/hardware/ImuAPI.h"
+#include "../../include/hardware/ImuStructs.h"
 
 ImuAPI::ImuAPI(AccelerometerScale _accScale, GyroscpoeScale _gyrScale, Bandwith _bandwith){
     imu = LSM6();
@@ -18,11 +16,11 @@ bool ImuAPI::begin(){
         return false;
 
     }else if(!ps.init()){
-        Serial.println("Filed to detect and initialize PS :C");
+        Serial.println("Failed to detect and initialize PS :C");
         return false;
     
     }else if(!mag.init()){
-        Serial.println("Filed to detect and initialize MAG :C");
+        Serial.println("Failed to detect and initialize MAG :C");
         return false;
     
     }
@@ -155,71 +153,3 @@ void ImuAPI::LSM6SetReg(){
     reg = 0b00000100; //IF_IN = 1 automatically increment register address
     imu.writeReg(imu.regAddr::CTRL3_C, reg);
 }
-
-/*
-ImuAPI::ImuAPI(GyroscpoeScale _gyrScale, AccelerometerScale _accScale, Bandwith _bandwith){
-    gyrScale = _gyrScale;
-    accScale = _accScale;
-    bandwith = _bandwith;
-
-    //float averagePressure = 0;
-    if (!imu.init())
-    {
-        errors.imu_error = IMU_INIT_ERROR;
-        Serial.println("Failed to detect and initialize IMU!"); 
-    }
-    
-    imu.enableDefault();
-
-    ps.enableDefault();
-    mag.enableDefault();
-    }
-
-}
-
-
-
-
-bool ImuAPI::begin(){
-    if(errors.imu_error != 0){
-        return false; //constructor error :C
-    }
-    //TO DO:
-    //... reg set for all sensors
-    return true;
-}
-
-
- 
-
-    imu.enableDefault();
-    ps.enableDefault();
-    mag.enableDefault();
-
-
-
-
-void ImuAPI::readRawData(){
-    imu.read();
-
-    data.ax = imu.a.x;
-    data.ay = imu.a.y;
-    data.az = imu.a.z;
-
-    data.gx = imu.g.x;
-    data.gy = imu.g.y;
-    data.gz = imu.g.z;
-
-    //data.pressure = ps.readPressureMillibars();
-    //data.temperature = ps.readTemperatureC();
-    //data.altitude = ps.pressureToAltitudeMeters(data.pressure, initial_pressure);
-}
-
-String ImuAPI::getRawData(){
-    char report[100];
-    snprintf(report, sizeof(report), "%6d;%6d;%6d;%6d;%6d;%6d",
-                data.ax, data.ay, data.az,
-                data.gx, data.gy, data.gz);
-    return String(report);
-}
-*/
