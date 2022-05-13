@@ -10,7 +10,7 @@
 
 ImuAPI IMU(AccelerometerScale::A_16g, GyroscpoeScale::G_1000dps);
 SPIClass mySpi(HSPI);
-extern TwoWire Wire;
+TwoWire myI2C(0);
 
 std::string message;
 // heheheh
@@ -19,10 +19,12 @@ void setup()
 {
   Serial.begin(115200);
   mySpi.begin(SCK,MISO,MOSI);
+  myI2C.begin(21,22,100000);
 
-  RPiControl::init(); // init raspberry controll first so the pins are set correctly before anything
+  RPiControl::init();
   ESP32_blelib::init(&pCharacteristicTX, &pCharacteristicRX);
 
+  /*
   if (!IMU.begin())
   {
     IMU.errors = IMU_INIT_ERROR;
@@ -31,6 +33,7 @@ void setup()
       delay(100);
     }
   }
+  */
 
   if (!IMU.setInitPressure())
   {

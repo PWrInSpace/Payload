@@ -12,12 +12,14 @@ void RPiControl::resolveCommand(std::string command)
     {
         Serial.println("CAM is on");
         RPiControl::recordOn();
+        RPiControl::ledPower();
         break;
     }
     case CAM_OFF:
     {
         Serial.println("CAM is off");
         RPiControl::recordOff();
+        RPiControl::ledOff();
         break;
     }
     case RPI_ON:
@@ -80,5 +82,20 @@ void RPiControl::raspberryOff()
     if (digitalRead(RPI_POWER_PIN) == 1)
     {
         digitalWrite(RPI_POWER_PIN, LOW);
+    }
+}
+
+void RPiControl::ledPower()
+{
+    if (digitalRead(WAKE_LED) == 0)
+    {
+        digitalWrite(WAKE_LED, HIGH);
+    }
+}
+void RPiControl::ledOff()
+{
+    if (digitalRead(WAKE_LED) == 1)
+    {
+        digitalWrite(WAKE_LED, LOW);
     }
 }

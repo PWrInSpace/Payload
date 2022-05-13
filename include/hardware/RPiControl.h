@@ -14,6 +14,8 @@ public:
     static void recordOff();
     static void raspberryPower();
     static void raspberryOff();
+    static void ledPower();
+    static void ledOff();
     static void init();
     static void resolveCommand(std::string command);
 
