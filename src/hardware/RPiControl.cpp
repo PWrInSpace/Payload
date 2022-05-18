@@ -1,10 +1,12 @@
 #include <../include/hardware/RPiControl.h>
 
+
+
 void RPiControl::resolveCommand(std::string command)
 {
-    int i;
-
-    i = (RPiCommands)3;
+    int i=-1;
+      i  = RPiCommands(atoi(command.c_str()));
+    
 
     switch (i)
     {

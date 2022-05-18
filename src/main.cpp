@@ -13,7 +13,6 @@ SPIClass mySpi(HSPI);
 TwoWire myI2C(0);
 
 std::string message;
-// heheheh
 
 void setup()
 {

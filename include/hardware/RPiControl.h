@@ -6,6 +6,7 @@
 #include <map>
 #include "../pinout.h"
 
+
 class RPiControl
 {
 
@@ -26,6 +27,7 @@ public:
         RPI_ON = 2,
         RPI_OFF = 3,
     } ;
+
 
 private:
    

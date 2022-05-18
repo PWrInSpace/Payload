@@ -21,7 +21,6 @@ public:
         Serial.println();
 
         message = rxValue;
-
         messageReceivedComplete = true;
         // respond(rxValue);
         // while (1)
