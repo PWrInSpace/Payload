@@ -2,7 +2,7 @@
 
 void ESP32_blelib::init(BLECharacteristic *pCharacteristicTX, BLECharacteristic *pCharacteristicRX)
 {
-    Serial.println("inside blelib init");
+    Serial.println("Initializing BLE server");
     deviceConnected = false;
     messageReceivedComplete = false;
 
@@ -16,7 +16,7 @@ void ESP32_blelib::init(BLECharacteristic *pCharacteristicTX, BLECharacteristic 
 
     pCharacteristicRX->addDescriptor(new BLE2902());
     pCharacteristicRX->setCallbacks(new ServerReadCallbacks());
-    pCharacteristicRX->setValue("essa");
+    pCharacteristicRX->setValue("default");
     pCharacteristicTX->addDescriptor(new BLE2902());
 
     pServer->getAdvertising()->addServiceUUID(serviceID);

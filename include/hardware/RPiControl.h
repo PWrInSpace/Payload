@@ -26,6 +26,7 @@ public:
         CAM_OFF = 1,
         RPI_ON = 2,
         RPI_OFF = 3,
+        WRNG_COMMND = -1
     } ;
 
 

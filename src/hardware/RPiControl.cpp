@@ -1,12 +1,23 @@
 #include <../include/hardware/RPiControl.h>
+#include <stdexcept>
 
+#include <iostream>
+#include <stdio.h>
+#include <string> 
+
+using namespace std;
 
 
 void RPiControl::resolveCommand(std::string command)
 {
     int i=-1;
-      i  = RPiCommands(atoi(command.c_str()));
-    
+    try{
+      i  = RPiCommands(atoi(command.c_str())); //stoi cos nie działa
+     
+    }
+    catch(std::invalid_argument const& ex){
+        Serial.println("A string with no command detected!\n");
+    }
 
     switch (i)
     {
@@ -34,6 +45,10 @@ void RPiControl::resolveCommand(std::string command)
     {
         Serial.println("RPI off");
         RPiControl::raspberryOff();
+        break;
+    }
+    case WRNG_COMMND:
+    {
         break;
     }
     default:

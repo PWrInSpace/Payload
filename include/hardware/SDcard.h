@@ -4,11 +4,20 @@
 #include <FS.h>
 #include <SPI.h>
 #include <SD.h>
-// #include "queue.h"
-// #include "dataStructs.h"
+#include "vfs_api.h"
 
-#define SD_CS 2 //do sprawdzenia
 
-bool SD_write(const String & file, const String & data);
+class SDCard{
+  SPIClass spi;
+  uint8_t cs;
+  SDFS __mySD;
+
+  public:
+  SDCard(SPIClass &_spi, uint8_t _cs);
+  bool init();
+  bool write(String path, const String & data); 
+  bool write(String path, char *dataFrame);
+  bool fileExists(String path);
+};
 
 #endif
