@@ -3,7 +3,7 @@
 #include <SPI.h>
 #include <Wire.h>
 #include <BLEDevice.h>
-#include "../include/ESP32_blelib.h"
+#include "../include/ble/ESP32_blelib.h"
 #include "../include/hardware/RPiControl.h"
 #include "../include/hardware/ImuAPI.h"
 #include "../include/tasks/tasks.h"

@@ -1,4 +1,4 @@
-#include <../include/ESP32_blelib.h>
+#include <../include/ble/ESP32_blelib.h>
 
 void ESP32_blelib::init(BLECharacteristic *pCharacteristicTX, BLECharacteristic *pCharacteristicRX)
 {

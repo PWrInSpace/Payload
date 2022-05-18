@@ -32,26 +32,28 @@ public:
         //         break;
         //     }
 
-        if (rxValue == "CAM")
-        {
-            Serial.println("CAM WORK");
-            RPiControl::recordOn();
-        }
-        if (rxValue == "LOW")
-        {
-            Serial.println("piny niskie");
-            digitalWrite(RPI_PIN_16, LOW);
-        }
-        if (rxValue == "RPIH")
-        {
-            Serial.println("RPI on");
-            digitalWrite(23, HIGH);
-        }
-        if (rxValue == "RPIL")
-        {
-            Serial.println("RPI off");
-            digitalWrite(23, LOW);
-        }
+        RPiControl::resolveCommand(rxValue);
+
+        // if (rxValue == "CAM")
+        // {
+        //     Serial.println("CAM WORK");
+        //     RPiControl::recordOn();
+        // }
+        // if (rxValue == "LOW")
+        // {
+        //     Serial.println("piny niskie");
+        //     digitalWrite(RPI_PIN_16, LOW);
+        // }
+        // if (rxValue == "RPIH")
+        // {
+        //     Serial.println("RPI on");
+        //     digitalWrite(23, HIGH);
+        // }
+        // if (rxValue == "RPIL")
+        // {
+        //     Serial.println("RPI off");
+        //     digitalWrite(23, LOW);
+        // }
     }
 
     // void callback(BLECharacteristic *pCharacteristic)

@@ -50,7 +50,7 @@ void RPiControl::init()
 
     digitalWrite(RPI_PIN_16, LOW);
     digitalWrite(RPI_PIN_22, LOW);
-    digitalWrite(RPI_POWER_PIN, LOW);
+    digitalWrite(RPI_POWER_PIN, HIGH);
     digitalWrite(WAKE_LED, LOW);
 }
 
@@ -72,16 +72,16 @@ void RPiControl::recordOff()
 
 void RPiControl::raspberryPower()
 {
-    if (digitalRead(RPI_POWER_PIN) == 0)
+    if (digitalRead(RPI_POWER_PIN) == 1)
     {
-        digitalWrite(RPI_POWER_PIN, HIGH);
+        digitalWrite(RPI_POWER_PIN, LOW);
     }
 }
 void RPiControl::raspberryOff()
 {
-    if (digitalRead(RPI_POWER_PIN) == 1)
+    if (digitalRead(RPI_POWER_PIN) == 0)
     {
-        digitalWrite(RPI_POWER_PIN, LOW);
+        digitalWrite(RPI_POWER_PIN, HIGH);
     }
 }
 
