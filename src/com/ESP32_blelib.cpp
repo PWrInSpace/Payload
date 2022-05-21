@@ -24,3 +24,8 @@ void ESP32_blelib::init(BLECharacteristic *pCharacteristicTX, BLECharacteristic 
     pServer->getAdvertising()->start();
     Serial.println("Waiting for a Client to connect...");
 }
+
+void ESP32_blelib::respondOnCharac(BLECharacteristic *pCharacteristicRSPND, String value){
+    pCharacteristicRSPND->setValue(value.c_str());
+
+}

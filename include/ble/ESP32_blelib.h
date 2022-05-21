@@ -1,5 +1,6 @@
 #include <BLEDevice.h>
 #include <BLE2902.h>
+#include <string>
 #include "../include/ble/EchoServerCallbacks.h"
 #include "../include/ble/ServerReadCallbacks.h"
 
@@ -27,6 +28,7 @@ class ESP32_blelib
 {
 public:
     static void init(BLECharacteristic *pCharacteristicTX, BLECharacteristic *pCharacteristicRX);
+    static void respondOnCharac(BLECharacteristic *pCharacteristicRSPND,String value = "default");
 
 private:
     ESP32_blelib() {}
