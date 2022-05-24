@@ -1,7 +1,6 @@
 #include <../include/hardware/RPiControl.h>
 #include <stdexcept>
-
-#include <iostream>
+#include "../include/ble/ESP32_blelib.h"
 #include <stdio.h>
 #include <string> 
 
@@ -10,6 +9,7 @@ using namespace std;
 
 void RPiControl::resolveCommand(std::string command)
 {
+    String msg;
     int i=-1;
     try{
       i  = RPiCommands(atoi(command.c_str())); //stoi cos nie działa
@@ -23,27 +23,27 @@ void RPiControl::resolveCommand(std::string command)
     {
     case CAM_REC:
     {
-        Serial.println("CAM is on");
+        msg = "CAM is on";
         RPiControl::recordOn();
         RPiControl::ledPower();
         break;
     }
     case CAM_OFF:
     {
-        Serial.println("CAM is off");
+        msg = "CAM is off";
         RPiControl::recordOff();
         RPiControl::ledOff();
         break;
     }
     case RPI_ON:
     {
-        Serial.println("RPI on");
+        msg = "RPI on";
         RPiControl::raspberryPower();
         break;
     }
     case RPI_OFF:
     {
-        Serial.println("RPI off");
+        msg = "RPI off";
         RPiControl::raspberryOff();
         break;
     }
@@ -52,9 +52,14 @@ void RPiControl::resolveCommand(std::string command)
         break;
     }
     default:
-        Serial.println("WRONG COMMAND");
+        msg  = "WRONG COMMAND";
         break;
     }
+    // ESP32_blelib::respondOnCharac(msg);
+    msg +=" rpi_control\n";
+    Serial.println(msg.c_str());
+   
+    
 }
 
 void RPiControl::init()
