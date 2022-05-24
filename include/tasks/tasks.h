@@ -10,14 +10,14 @@
 // #include "../include/timers/watchdog.h"
 #include "../include/com/now.h"
 #include "pinout.h"
-#include "../include/hardware/SDCard.h"
-#include "../include/structs/errors.h"
+#include "../hardware/SDcard.h"
+#include "../structs/errors.h"
+#include "../structs/PayloadControl.h"
 // #include "../include/structs/stateMachine.h"
 
+extern PayloadControl payload;
 
-// extern WatchdogTimer wt;
 //Tasks
-void loraTask(void *arg);
 void rxHandlingTask(void *arg);
 
 void stateTask(void *arg);
@@ -25,8 +25,7 @@ void dataTask(void *arg);
 void sdTask(void *arg);
 void flashTask(void *arg);
 
-//Timers
-void watchdogTimerCallback(TimerHandle_t xTimer);
+//Timersandvoid watchdogTimerCallback(TimerHandle_t xTimer);
 void disconnectTimerCallback(TimerHandle_t xTimer);
 
 // Functions

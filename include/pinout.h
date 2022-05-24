@@ -22,6 +22,7 @@
 #define RPI_POWER_PIN 23
 #define WAKE_LED 2
 
+
 void pinInit();
 
 #endif
