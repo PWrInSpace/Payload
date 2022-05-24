@@ -4,17 +4,14 @@
 #include "Arduino.h"
 #include "FreeRTOS.h"
 #include <stdint.h>
+#include <SPI.h>
+#include <Wire.h>
 // #include "../include/structs/stateMachine.h"  //bedzie raczej potrzebne prymitywne chociaz do eykrycia startu
 
 #define SD_FRAME_ARRAY_SIZE 512
 #define LORA_FRAME_ARRAY_SIZE 256
 #define LORA_TX_DATA_PREFIX "R4D;"
 #define LORA_TX_OPTIONS_PREFIX "R4C;"
-
-
-
-
-
 
 //PERIODS
 #define ESP_NOW_SLEEP_TIME 30 * 1000

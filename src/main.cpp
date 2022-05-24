@@ -1,50 +1,46 @@
-#include <Arduino.h>
-#include <FreeRTOS.h>
-#include <SPI.h>
-#include <Wire.h>
+#include "pinout.h"
+#include "config.h"
 #include <BLEDevice.h>
 #include "../include/ble/ESP32_blelib.h"
 #include "../include/hardware/RPiControl.h"
 #include "../include/hardware/ImuAPI.h"
+#include "../include/structs/PayloadControl.h"
 #include "../include/tasks/tasks.h"
-
 ImuAPI IMU(AccelerometerScale::A_16g, GyroscpoeScale::G_1000dps);
-SPIClass mySpi(HSPI);
-TwoWire myI2C(0);
 
+PayloadControl payload;
 std::string message;
 
 void setup()
 {
   Serial.begin(115200);
-  mySpi.begin(SCK,MISO,MOSI);
-  myI2C.begin(21,22,100000);
 
   RPiControl::init();
   ESP32_blelib::init(&pCharacteristicTX, &pCharacteristicRX);
 
-  /*
-  if (!IMU.begin())
-  {
-    IMU.errors = IMU_INIT_ERROR;
-    while (1)
-    {
-      delay(100);
-    }
-  }
-  */
+  /// queues
+  payload.hardware.sdDataQueue = xQueueCreate(SD_QUEUE_LENGTH, sizeof(char[SD_FRAME_ARRAY_SIZE]));
+  payload.hardware.sdDataQueue = xQueueCreate(SD_QUEUE_LENGTH, sizeof(char[SD_FRAME_ARRAY_SIZE]));
+  payload.hardware.flashQueue = xQueueCreate(FLASH_QUEUE_LENGTH, sizeof(char[SD_FRAME_ARRAY_SIZE]));
+  payload.hardware.espNowQueue = xQueueCreate(ESP_NOW_QUEUE_LENGTH, sizeof(uint8_t));
 
-  if (!IMU.setInitPressure())
-  {
-    IMU.errors = IMU_PRESSURE_ERROR;
-  }
+  /// semaphores
+  payload.hardware.spiMutex = xSemaphoreCreateMutex();
+  payload.hardware.i2cMutex = xSemaphoreCreateMutex();
+
+  /// tasks
+  // pro cpu
+  xTaskCreatePinnedToCore(rxHandlingTask, "RX handling task", 8192, NULL, 2, &payload.hardware.rxHandlingTask, PRO_CPU_NUM);
+
+  // app cpu
+  xTaskCreatePinnedToCore(dataTask, "Data task", 30000, NULL, 2, &payload.hardware.dataTask, APP_CPU_NUM);
+  xTaskCreatePinnedToCore(sdTask, "SD task", 30000, NULL, 3, &payload.hardware.sdTask, APP_CPU_NUM);
+  xTaskCreatePinnedToCore(flashTask, "Flash task", 8192, NULL, 1, &payload.hardware.flashTask, APP_CPU_NUM);
 }
 
 void loop()
 {
-  delay(20);
-  IMU.readRawData();
-  IMU.getData();
+
   // text = Serial2.readString();
   // Serial.println(text.c_str());
   // pCharacteristicTX.setValue(text.c_str());

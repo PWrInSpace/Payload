@@ -1,4 +1,4 @@
-#include "../include/hardware/SDCard.h"
+#include "../include/hardware/SDcard.h"
 #include <string.h>
 
 SDCard::SDCard(SPIClass &_spi, uint8_t _cs):
