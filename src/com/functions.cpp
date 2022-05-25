@@ -22,8 +22,11 @@ void measure() {
 // To implementation of each module:
 
 void rxNowHandler(const uint8_t *incomingData, int len) {
-
-
+    memcpy((void *)&dataFromObc, (DataFromObc *)incomingData, sizeof(dataFromObc));
+     Serial.print("COMMAND: ");
+    Serial.println(dataFromObc.command);
+    Serial.print("COMMAND TIME: ");
+    Serial.println(dataFromObc.commandTime);
 }
 
 /**********************************************************************************************/

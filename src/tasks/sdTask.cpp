@@ -9,8 +9,10 @@ void sdTask(void *arg)
     String dataPath = dataFileName;
     String logPath = logFileName;
     uint8_t sd_i = 0;
-    vTaskDelay(50 / portTICK_RATE_MS);
+    vTaskDelay(500 / portTICK_RATE_MS);
+    
     xSemaphoreTake(payload.hardware.spiMutex, pdTRUE);
+    Serial.println("CHUJ");
     while (!mySD.init())
     {
         Serial.println("SD INIT ERROR!"); // DEBUG

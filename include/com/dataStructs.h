@@ -3,7 +3,10 @@
 
 struct DataToObc {
 
-    bool wakenUp : 1;
+    bool wakenUp : 1; //if waken up
+    bool isRecording : 1; // if rpi says it is
+    bool data : 1; // if data is collected
+    float vBat = 0.0; //battery voltage
     // To implementation of each module.
 };
 

@@ -13,6 +13,7 @@
 #include "../hardware/SDcard.h"
 #include "../structs/errors.h"
 #include "../structs/PayloadControl.h"
+#include "../../include/hardware/ImuAPI.h"
 // #include "../include/structs/stateMachine.h"
 
 extern PayloadControl payload;
