@@ -2,7 +2,7 @@
 #define CONFIG_HH
 
 #include "Arduino.h"
-#include "FreeRTOS.h"
+
 #include <stdint.h>
 #include <SPI.h>
 #include <Wire.h>

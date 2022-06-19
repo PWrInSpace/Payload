@@ -1,5 +1,5 @@
-#include "pinout.h"
-#include "config.h"
+#include "../include/pinout.h"
+#include "../include/config.h"
 #include <BLEDevice.h>
 #include <esp_wifi.h>
 #include "../include/ble/ESP32_blelib.h"
@@ -9,19 +9,21 @@
 #include "../include/tasks/tasks.h"
 #include "../include/com/now.h"
 
+
 ImuAPI IMU(AccelerometerScale::A_16g, GyroscpoeScale::G_1000dps);
 PayloadControl payload;
 std::string message;
 
 volatile DataToObc dataToObc;
 volatile DataFromObc dataFromObc;
+volatile DataToSD dataToSD;
 volatile uint16_t sleepTime = 30000;
 
 void setup()
 {
   Serial.begin(115200);
 
-  // ESP32_blelib::init(&pCharacteristicTX, &pCharacteristicRX);
+  ESP32_blelib::init(&pCharacteristicTX, &pCharacteristicRX);
   RPiControl::init();
   /// queues
   payload.hardware.sdDataQueue = xQueueCreate(SD_QUEUE_LENGTH, sizeof(char[SD_FRAME_ARRAY_SIZE]));
@@ -42,13 +44,13 @@ void setup()
   xTaskCreatePinnedToCore(flashTask, "Flash task", 8192, NULL, 1, &payload.hardware.flashTask, APP_CPU_NUM);
 
   // set mac adress
-  WiFi.mode(WIFI_STA);
-  esp_wifi_set_mac(WIFI_IF_STA, adress);
+  // WiFi.mode(WIFI_STA);
+  // esp_wifi_set_mac(WIFI_IF_STA, adress);
 
   initPeripherals();
 
-  nowInit();
-  nowAddPeer(adressObc, 0);
+ //nowInit();
+  // nowAddPeer(adressObc, 0);
 }
 
 void loop()

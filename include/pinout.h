@@ -1,7 +1,7 @@
 #ifndef PINOUT_H
 #define PINOUT_H
 #include <Arduino.h>
-#include <FreeRTOS.h>
+
 
 #define BATT_CHECK 36 // Sens VP
 
