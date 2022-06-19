@@ -14,11 +14,12 @@ struct DataFromObc {
 
     uint8_t command;
     uint8_t commandTime;
+    uint8_t state;
 };
 
 extern volatile DataToObc dataToObc;
 extern volatile DataFromObc dataFromObc;
-extern volatile uint16_t nextSendTime;
+extern volatile uint16_t sleepTime;
 
 #define MIN_SLEEP_TIME_MS 2000
 

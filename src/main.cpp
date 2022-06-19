@@ -8,22 +8,21 @@
 #include "../include/structs/PayloadControl.h"
 #include "../include/tasks/tasks.h"
 #include "../include/com/now.h"
-ImuAPI IMU(AccelerometerScale::A_16g, GyroscpoeScale::G_1000dps);
 
+ImuAPI IMU(AccelerometerScale::A_16g, GyroscpoeScale::G_1000dps);
 PayloadControl payload;
 std::string message;
 
 volatile DataToObc dataToObc;
 volatile DataFromObc dataFromObc;
-
-volatile uint16_t nextSendTime = 30000;
+volatile uint16_t sleepTime = 30000;
 
 void setup()
 {
   Serial.begin(115200);
 
   // ESP32_blelib::init(&pCharacteristicTX, &pCharacteristicRX);
-
+  RPiControl::init();
   /// queues
   payload.hardware.sdDataQueue = xQueueCreate(SD_QUEUE_LENGTH, sizeof(char[SD_FRAME_ARRAY_SIZE]));
   payload.hardware.sdDataQueue = xQueueCreate(SD_QUEUE_LENGTH, sizeof(char[SD_FRAME_ARRAY_SIZE]));
@@ -37,10 +36,9 @@ void setup()
   /// tasks
   // pro cpu
   xTaskCreatePinnedToCore(rxHandlingTask, "RX handling task", 8192, NULL, 2, &payload.hardware.rxHandlingTask, PRO_CPU_NUM);
-
   // app cpu
   xTaskCreatePinnedToCore(dataTask, "Data task", 30000, NULL, 2, &payload.hardware.dataTask, APP_CPU_NUM);
-  //xTaskCreatePinnedToCore(sdTask, "SD task", 30000, NULL, 3, &payload.hardware.sdTask, APP_CPU_NUM);
+  // xTaskCreatePinnedToCore(sdTask, "SD task", 30000, NULL, 3, &payload.hardware.sdTask, APP_CPU_NUM);
   xTaskCreatePinnedToCore(flashTask, "Flash task", 8192, NULL, 1, &payload.hardware.flashTask, APP_CPU_NUM);
 
   // set mac adress

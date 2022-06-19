@@ -10,10 +10,30 @@
 #define FLASH_QUEUE_LENGTH 20 
 #define ESP_NOW_QUEUE_LENGTH 5
 
+enum States
+{
+  INIT = 0,
+  IDLE,
+  FUELING,
+  ARMED,
+  RDY_TO_LAUNCH,
+  COUNTDOWN,
+  FLIGHT,
+  FIRST_STAGE_RECOVERY,
+  SECOND_STAGE_RECOVERY,
+  ON_GROUND,
+  HOLD,
+  ABORT,
+  NO_CHANGE = 0xff // DO NOT USE, ONLY FOR REQUEST PURPOSE
+};
+
 struct PayloadControl
 {
     HardwareManagement hardware;
+    uint8_t state;
     PayloadControl() = default;
 };
+
+
 
 #endif

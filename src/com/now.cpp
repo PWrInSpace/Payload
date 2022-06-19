@@ -34,7 +34,7 @@ bool nowAddPeer(const uint8_t *address, uint8_t channel) {
 
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 
-    if (status && nextSendTime > MIN_SLEEP_TIME_MS) goToSleep();
+    if (status && sleepTime > MIN_SLEEP_TIME_MS) goToSleep();
 }
 
 /**********************************************************************************************/
@@ -43,13 +43,13 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len) {
 
     if (adressCompare(mac, adressObc)) {
 
-        // if nextSendTime:
-        if (len == sizeof(nextSendTime)) {
+        // if sleepTime:
+        if (len == sizeof(sleepTime)) {
 
-            memcpy((void*) &nextSendTime, (uint16_t *)incomingData, sizeof(nextSendTime));
+            memcpy((void*) &sleepTime, (uint16_t *)incomingData, sizeof(sleepTime));
 
             // if long time - go to sleep:
-            if (nextSendTime > MIN_SLEEP_TIME_MS) goToSleep();
+            if (sleepTime > MIN_SLEEP_TIME_MS) goToSleep();
             else dataToObc.wakenUp = true;
         }
 

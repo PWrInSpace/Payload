@@ -2,20 +2,20 @@
 #include <stdexcept>
 #include "../include/ble/ESP32_blelib.h"
 #include <stdio.h>
-#include <string> 
+#include <string>
 
 using namespace std;
-
 
 void RPiControl::resolveCommand(std::string command)
 {
     String msg;
-    int i=-1;
-    try{
-      i  = RPiCommands(atoi(command.c_str())); //stoi cos nie działa
-     
+    int i = -1;
+    try
+    {
+        i = RPiCommands(atoi(command.c_str())); // stoi cos nie działa
     }
-    catch(std::invalid_argument const& ex){
+    catch (std::invalid_argument const &ex)
+    {
         Serial.println("A string with no command detected!\n");
     }
 
@@ -52,14 +52,12 @@ void RPiControl::resolveCommand(std::string command)
         break;
     }
     default:
-        msg  = "WRONG COMMAND";
+        msg = "WRONG COMMAND";
         break;
     }
     // ESP32_blelib::respondOnCharac(msg);
-    msg +=" rpi_control\n";
+    msg += " rpi_control\n";
     Serial.println(msg.c_str());
-   
-    
 }
 
 void RPiControl::init()
@@ -72,7 +70,7 @@ void RPiControl::init()
 
     digitalWrite(RPI_PIN_16, LOW);
     digitalWrite(RPI_PIN_22, LOW);
-    digitalWrite(RPI_POWER_PIN, HIGH);
+    digitalWrite(RPI_POWER_PIN, LOW);
     digitalWrite(WAKE_LED, LOW);
 }
 
@@ -96,14 +94,14 @@ void RPiControl::raspberryPower()
 {
     if (digitalRead(RPI_POWER_PIN) == 1)
     {
-        digitalWrite(RPI_POWER_PIN, LOW);
+        digitalWrite(RPI_POWER_PIN, HIGH);
     }
 }
 void RPiControl::raspberryOff()
 {
     if (digitalRead(RPI_POWER_PIN) == 0)
     {
-        digitalWrite(RPI_POWER_PIN, HIGH);
+        digitalWrite(RPI_POWER_PIN, LOW);
     }
 }
 
