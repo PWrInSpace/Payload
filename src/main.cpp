@@ -23,8 +23,17 @@ void setup()
 {
   Serial.begin(115200);
 
-  ESP32_blelib::init(&pCharacteristicTX, &pCharacteristicRX);
-  RPiControl::init();
+    // set mac adress
+  WiFi.mode(WIFI_STA);
+   esp_wifi_set_mac(WIFI_IF_STA, adress);
+
+  initPeripherals();
+
+ nowInit();
+   nowAddPeer(adressObc, 0);
+
+  // ESP32_blelib::init(&pCharacteristicTX, &pCharacteristicRX);
+  // RPiControl::init();
   /// queues
   payload.hardware.sdDataQueue = xQueueCreate(SD_QUEUE_LENGTH, sizeof(char[SD_FRAME_ARRAY_SIZE]));
   payload.hardware.sdDataQueue = xQueueCreate(SD_QUEUE_LENGTH, sizeof(char[SD_FRAME_ARRAY_SIZE]));
@@ -39,18 +48,11 @@ void setup()
   // pro cpu
   xTaskCreatePinnedToCore(rxHandlingTask, "RX handling task", 8192, NULL, 2, &payload.hardware.rxHandlingTask, PRO_CPU_NUM);
   // app cpu
-  xTaskCreatePinnedToCore(dataTask, "Data task", 30000, NULL, 2, &payload.hardware.dataTask, APP_CPU_NUM);
+  // xTaskCreatePinnedToCore(dataTask, "Data task", 30000, NULL, 2, &payload.hardware.dataTask, APP_CPU_NUM);
   // xTaskCreatePinnedToCore(sdTask, "SD task", 30000, NULL, 3, &payload.hardware.sdTask, APP_CPU_NUM);
   xTaskCreatePinnedToCore(flashTask, "Flash task", 8192, NULL, 1, &payload.hardware.flashTask, APP_CPU_NUM);
 
-  // set mac adress
-  // WiFi.mode(WIFI_STA);
-  // esp_wifi_set_mac(WIFI_IF_STA, adress);
 
-  initPeripherals();
-
- //nowInit();
-  // nowAddPeer(adressObc, 0);
 }
 
 void loop()

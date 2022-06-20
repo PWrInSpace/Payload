@@ -1,12 +1,15 @@
 #include "../../include/tasks/tasks.h"
 #include "../../include/hardware/RPiControl.h"
+#include "../../include/com/now.h"
 
 extern PayloadControl payload;
+extern volatile DataToObc dataToObc;
 
 void rxHandlingTask(void *arg)
 {
-   
+    
     Serial.println("rxHandlingtask works");
+    esp_now_send(adressObc ,(uint8_t*)&dataToObc,sizeof(dataToObc));
     while (1)
     {
         // ESPNOW
@@ -63,6 +66,7 @@ void rxHandlingTask(void *arg)
                 break;
             }
         }
+          vTaskDelay(10 / portTICK_PERIOD_MS);
     }
     vTaskDelay(100 / portTICK_PERIOD_MS);
 }
