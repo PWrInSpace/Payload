@@ -1,4 +1,7 @@
 #include "../../include/com/now.h"
+#include "../../include/structs/PayloadControl.h"
+
+extern PayloadControl payload;
 
 bool adressCompare(const uint8_t *addr1, const uint8_t *addr2);
 
@@ -34,22 +37,22 @@ bool nowAddPeer(const uint8_t *address, uint8_t channel) {
 
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 
-    if (status && sleepTime > MIN_SLEEP_TIME_MS) goToSleep();
+    if (status && payload.nextSendTime > MIN_SLEEP_TIME_MS) goToSleep();
 }
 
 /**********************************************************************************************/
 
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len) {
 
-    if (adressCompare(mac, adressObc)) {
+    if (adressCompare(mac, addressObc)) {
 
         // if sleepTime:
-        if (len == sizeof(sleepTime)) {
+        if (len == sizeof(payload.nextSendTime)) {
 
-            memcpy((void*) &sleepTime, (uint16_t *)incomingData, sizeof(sleepTime));
+            memcpy((void*) &payload.nextSendTime, (uint16_t *)incomingData, sizeof(sleepTime));
 
             // if long time - go to sleep:
-            if (sleepTime > MIN_SLEEP_TIME_MS) goToSleep();
+            if (payload.nextSendTime> MIN_SLEEP_TIME_MS) goToSleep();
             else dataToObc.wakenUp = true;
         }
 

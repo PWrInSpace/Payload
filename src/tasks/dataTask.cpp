@@ -24,18 +24,9 @@ bool imuInit()
     return 1;
 }
 
-void dataTask(void *arg)
+void dataTask()
 {
-    float vBat = 0.0;
-
-    while (!imuInit())
-    {
-        Serial.println("IMU sra");
-    }
+    dataToSD.imuData = payload.hardware.imu.getDataStruct();
+    Serial.println("Datatask works");
     
-    while (1)
-    {
-        Serial.println("Datatask works");
-        vTaskDelay(500 / portTICK_PERIOD_MS);
-    }
 }

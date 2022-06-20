@@ -4,6 +4,7 @@
 #include "../include/pinout.h"
 #include "../include/config.h"
 #include "../structs/HardwareManagement.h"
+#include "../hardware/ImuAPI.h"
 
 // QUEUE LENGTHS
 #define SD_QUEUE_LENGTH 10
@@ -30,8 +31,12 @@ enum States
 struct PayloadControl
 {
     HardwareManagement hardware;
-    uint8_t state;
     PayloadControl() = default;
+    uint16_t nextSendTime = 1000;
+    bool isRecording = false;
+    bool isRPiOn = false;
+    float vbat = 0.0;
+
 };
 
 

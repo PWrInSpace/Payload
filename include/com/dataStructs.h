@@ -1,12 +1,13 @@
 #ifndef DATA_STRUCTS_H
 #define DATA_STRUCTS_H
+#include "../include/hardware/ImuStructs.h"
 
 struct DataToObc {
     bool wakenUp : 1; //if waken up
     bool isRecording : 1; // if rpi says it is
     bool data : 1; // if data is collected
     float vBat = 21.37; //battery voltage
-    // To implementation of each module.
+    bool isRpiOn = false;
 };
 
 struct DataFromObc {
@@ -17,13 +18,15 @@ struct DataFromObc {
 
 struct DataToSD{
     bool wakenUp : 1; //if waken up
+    bool isRecording : 1; // if rpi says it is
+    bool data : 1; // if data is collected
     float vBat = 21.37; //battery voltage
-    uint8_t state;
+    ImuData imuData;
 };
 
 extern volatile DataToObc dataToObc;
 extern volatile DataFromObc dataFromObc;
-extern volatile DataToSD dataToSD;
+extern  DataToSD dataToSD;
 extern volatile uint16_t sleepTime;
 
 #define MIN_SLEEP_TIME_MS 2000

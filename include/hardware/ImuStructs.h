@@ -26,7 +26,7 @@ enum AccelerometerScale{
     A_2g = 0,
     A_4g,
     A_8g,
-    A_16g,
+    A_16g
 };
 
 enum GyroscpoeScale{

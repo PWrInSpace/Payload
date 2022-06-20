@@ -9,72 +9,56 @@
 #include "../include/tasks/tasks.h"
 #include "../include/com/now.h"
 
-
-ImuAPI IMU(AccelerometerScale::A_16g, GyroscpoeScale::G_1000dps);
 PayloadControl payload;
 std::string message;
+uint32_t loopTimer;
 
 volatile DataToObc dataToObc;
 volatile DataFromObc dataFromObc;
-volatile DataToSD dataToSD;
-volatile uint16_t sleepTime = 30000;
+DataToSD dataToSD;
 
 void setup()
 {
   Serial.begin(115200);
-
-    // set mac adress
+  loopTimer = 30000;
+  payload.hardware.imu = ImuAPI(AccelerometerScale::A_16g, GyroscpoeScale::G_1000dps);
+  // set mac adress
   WiFi.mode(WIFI_STA);
-   esp_wifi_set_mac(WIFI_IF_STA, adress);
+  esp_wifi_set_mac(WIFI_IF_STA, addressPayload);
+  Serial.println(WiFi.macAddress());
+  // initPeripherals(); //ogranac imu kurw
 
-  initPeripherals();
-
- nowInit();
-   nowAddPeer(adressObc, 0);
+  nowInit();
+  nowAddPeer(addressObc, 0);
 
   // ESP32_blelib::init(&pCharacteristicTX, &pCharacteristicRX);
   // RPiControl::init();
   /// queues
-  payload.hardware.sdDataQueue = xQueueCreate(SD_QUEUE_LENGTH, sizeof(char[SD_FRAME_ARRAY_SIZE]));
-  payload.hardware.sdDataQueue = xQueueCreate(SD_QUEUE_LENGTH, sizeof(char[SD_FRAME_ARRAY_SIZE]));
-  payload.hardware.flashQueue = xQueueCreate(FLASH_QUEUE_LENGTH, sizeof(char[SD_FRAME_ARRAY_SIZE]));
-  payload.hardware.espNowQueue = xQueueCreate(ESP_NOW_QUEUE_LENGTH, sizeof(uint8_t));
-
+ payload.hardware.sdDataQueue = xQueueCreate(SD_QUEUE_LENGTH, sizeof(DataToSD));
   /// semaphores
   payload.hardware.spiMutex = xSemaphoreCreateMutex();
   payload.hardware.i2cMutex = xSemaphoreCreateMutex();
-
-  /// tasks
-  // pro cpu
-  xTaskCreatePinnedToCore(rxHandlingTask, "RX handling task", 8192, NULL, 2, &payload.hardware.rxHandlingTask, PRO_CPU_NUM);
-  // app cpu
-  // xTaskCreatePinnedToCore(dataTask, "Data task", 30000, NULL, 2, &payload.hardware.dataTask, APP_CPU_NUM);
-  // xTaskCreatePinnedToCore(sdTask, "SD task", 30000, NULL, 3, &payload.hardware.sdTask, APP_CPU_NUM);
-  xTaskCreatePinnedToCore(flashTask, "Flash task", 8192, NULL, 1, &payload.hardware.flashTask, APP_CPU_NUM);
-
-
+  xTaskCreatePinnedToCore(sdTask, "SD task", 30000, NULL, 3, &payload.hardware.sdTask, APP_CPU_NUM);
 }
 
 void loop()
 {
+  measure();
+  if(digitalRead(RPI_PIN_16)==HIGH){ //check if it is recording, RPI pin should go high else low
+   dataToObc.isRecording = true;
+   payload.isRecording = true;
+   dataToSD.isRecording = true;
+  }
+  if(digitalRead(RPI_PIN_18)==HIGH){ //check if programm initialized properly - pin should go high
+    payload.isRPiOn = true;
+  }
 
-  // text = Serial2.readString();
-  // Serial.println(text.c_str());
-  // pCharacteristicTX.setValue(text.c_str());
-  // pCharacteristicTX.notify();
-  // // if device is connected and all packets are received, then respond
-  // if (deviceConnected && messageReceivedComplete)
-  // {
-  //     messageReceivedComplete = false;
-  //     if (String("hello").c_str() == message)
-  //     {
-  //         respond(String("world").c_str());
-  //         Serial.println("sent world");
-  //     }
-  //     else
-  //     {
-  //         respond(message);
-  //         Serial.println("echoed");
-  //     }
-  // }
+  if (millis() - loopTimer >= payload.nextSendTime)
+  {
+    Serial.println("sent to obc\n");
+    loopTimer = millis();
+    esp_now_send(addressObc, (uint8_t *)&dataToObc, sizeof(dataToObc));
+  }
+
+  vTaskDelay(1000 / portTICK_PERIOD_MS);
 }

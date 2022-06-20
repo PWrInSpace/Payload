@@ -22,7 +22,8 @@ extern PayloadControl payload;
 void rxHandlingTask(void *arg);
 
 void stateTask(void *arg);
-void dataTask(void *arg);
+void dataTask();
+bool imuInit();
 void sdTask(void *arg);
 void flashTask(void *arg);
 

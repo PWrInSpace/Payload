@@ -1,12 +1,18 @@
 #include "../include/com/functions.h"
 #include "../include/structs/PayloadControl.h"
-
+#include "../../include/hardware/RPiControl.h"
+#include "../../include/tasks/tasks.h"
 // To implementation of each module:
 extern PayloadControl payload;
 
-
 void initPeripherals()
 {
+    while (!imuInit())
+    {
+        Serial.println("IMU sra");
+    }
+
+    payload.hardware.imu.begin();
 }
 
 /**********************************************************************************************/
@@ -15,6 +21,18 @@ void initPeripherals()
 
 void measure()
 {
+    dataTask();
+
+    payload.vbat = analogRead(BATT_CHECK);
+    Serial.printf("voltage measure: [V]%f \n", analogRead(BATT_CHECK));
+    dataToSD.vBat = analogRead(BATT_CHECK);
+    // Serial.println((void*)dataToSD);
+    if (xQueueSend(payload.hardware.sdDataQueue, (void *)&dataToSD, 0) != pdTRUE)
+    {
+        Serial.print("err data sd queue send\n");
+    }
+
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
 }
 
 /**********************************************************************************************/
@@ -29,31 +47,40 @@ void rxNowHandler(const uint8_t *incomingData, int len)
     Serial.print("COMMAND TIME: ");
     Serial.println(dataFromObc.commandTime);
 
-    if (xQueueSend(payload.hardware.espNowQueue, (void *)&dataFromObc, 0) != pdTRUE)
+    if (dataFromObc.command == 69) // turn on
     {
-        Serial.print("err data rxnow queue send\n");
+        RPiControl::raspberryPower();
+    }
+
+    if (dataFromObc.command == 21) // reset
+    {
+        RPiControl::raspberryOff();
+        vTaskDelay(1000);
+        RPiControl::raspberryPower();
+    }
+
+    if (dataFromObc.command == 37) // turn on
+    {
+        RPiControl::recordOn();
     }
 }
-    /**********************************************************************************************/
-    /**********************************************************************************************/
-    /**********************************************************************************************/
+/**********************************************************************************************/
+/**********************************************************************************************/
+/**********************************************************************************************/
 
-    uint32_t getPowerTime_ms()
-    {
+uint32_t getPowerTime_ms()
+{
+    timeval tv;
+    timezone tz;
+    gettimeofday(&tv, (void *)&tz);
+    return tv.tv_sec * 1000 + tv.tv_usec / 1000;
+}
 
-        timeval tv;
-        timezone tz;
+/**********************************************************************************************/
 
-        gettimeofday(&tv, (void *)&tz);
-        return tv.tv_sec * 1000 + tv.tv_usec / 1000;
-    }
-
-    /**********************************************************************************************/
-
-    void goToSleep()
-    {
-        // dataToObc.wakenUp = false;
-        esp_sleep_enable_timer_wakeup((sleepTime)*10e2);
-        esp_deep_sleep_start();
-    }
-
+void goToSleep()
+{
+    // dataToObc.wakenUp = false;
+    esp_sleep_enable_timer_wakeup((payload.nextSendTime) * 10e2);
+    esp_deep_sleep_start();
+}

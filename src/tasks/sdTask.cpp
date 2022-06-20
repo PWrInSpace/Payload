@@ -5,14 +5,13 @@
 void sdTask(void *arg)
 {
     SDCard mySD(payload.hardware.mySPI, SD_CS);
-    char data[SD_FRAME_ARRAY_SIZE] = {};
+    DataToSD data;
     String dataPath = dataFileName;
     String logPath = logFileName;
     uint8_t sd_i = 0;
     vTaskDelay(500 / portTICK_RATE_MS);
-    
     xSemaphoreTake(payload.hardware.spiMutex, pdTRUE);
-    Serial.println("CHUJ");
+    Serial.println("Initializing sd task");
     while (!mySD.init())
     {
         Serial.println("SD INIT ERROR!"); // DEBUG
@@ -29,30 +28,25 @@ void sdTask(void *arg)
     dataPath = dataPath + String(sd_i) + ".txt";
     logPath = logPath + String(sd_i) + ".txt";
     xSemaphoreGive(payload.hardware.spiMutex);
+    char frameToSD[SD_FRAME_ARRAY_SIZE] = {};
     while (1)
     {
-
         if (xQueueReceive(payload.hardware.sdDataQueue, (void *)&data, 0) == pdTRUE)
         {
-
+            snprintf(frameToSD, sizeof(frameToSD),  "vbat: %f, recording: %d, ax: %0.3f, ay: %0.3f, az: %0.3f, gx: %0.3f, gy: %0.3f, gz: %0.3f, mx: %0.3f, my: %0.3f, mz: %0.3f, press: %0.3f, alt: %0.3f, tempr: %0.3f\n",
+            millis() , data.vBat, data.isRecording,
+            data.imuData.ax, data.imuData.ay, data.imuData.az,
+            data.imuData.gx, data.imuData.gy, data.imuData.gz,
+            data.imuData.mx, data.imuData.my, data.imuData.mz,
+            data.imuData.pressure, data.imuData.altitude, data.imuData.temperature);
             xSemaphoreTake(payload.hardware.spiMutex, portMAX_DELAY);
+            if (!mySD.write(dataPath, frameToSD))
+            {
+                Serial.println("could not save in given path");
+            }
 
-            if (strncmp(data, "LOG", 3) == 0)
-            {
-                if (!mySD.write(logPath, data))
-                {
-                   
-                }
-            }
-            else
-            {
-                if (!mySD.write(dataPath, data))
-                {
-                   
-                }
-            }
             xSemaphoreGive(payload.hardware.spiMutex);
         }
-        vTaskDelay(25 / portTICK_PERIOD_MS);
+        vTaskDelay(250 / portTICK_PERIOD_MS);
     }
 }
