@@ -21,11 +21,11 @@ void initPeripherals()
 
 void measure()
 {
-    dataTask();
+    // dataTask();
 
     payload.vbat = analogRead(BATT_CHECK);
     Serial.printf("voltage measure: [V]%f \n", analogRead(BATT_CHECK));
-    dataToSD.vBat = analogRead(BATT_CHECK);
+    dataToSD.vBat = payload.vbat;
     // Serial.println((void*)dataToSD);
     if (xQueueSend(payload.hardware.sdDataQueue, (void *)&dataToSD, 0) != pdTRUE)
     {

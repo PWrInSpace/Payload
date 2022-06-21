@@ -27,6 +27,6 @@ bool imuInit()
 void dataTask()
 {
     dataToSD.imuData = payload.hardware.imu.getDataStruct();
-    Serial.println("Datatask works");
+    // Serial.println("Datatask works");
     
 }

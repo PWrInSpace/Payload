@@ -44,10 +44,15 @@ void setup()
 void loop()
 {
   measure();
-  if(digitalRead(RPI_PIN_16)==HIGH){ //check if it is recording, RPI pin should go high else low
+  if(digitalRead(RPI_PIN_22)==HIGH){ //check if it is recording, RPI pin should go high else low
    dataToObc.isRecording = true;
    payload.isRecording = true;
    dataToSD.isRecording = true;
+  }
+  else{
+    dataToObc.isRecording = false;
+   payload.isRecording = false;
+   dataToSD.isRecording = false;
   }
   if(digitalRead(RPI_PIN_18)==HIGH){ //check if programm initialized properly - pin should go high
     payload.isRPiOn = true;

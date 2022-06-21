@@ -64,12 +64,12 @@ void RPiControl::init()
 {
     pinMode(RPI_PIN_16, OUTPUT);
     pinMode(RPI_PIN_18, INPUT);
-    pinMode(RPI_PIN_22, OUTPUT);
+    pinMode(RPI_PIN_22, INPUT);
     pinMode(RPI_POWER_PIN, OUTPUT);
     pinMode(WAKE_LED, OUTPUT);
 
     digitalWrite(RPI_PIN_16, LOW);
-    digitalWrite(RPI_PIN_22, LOW);
+    // digitalWrite(RPI_PIN_22, LOW);
     digitalWrite(RPI_POWER_PIN, LOW);
     digitalWrite(WAKE_LED, LOW);
 }
