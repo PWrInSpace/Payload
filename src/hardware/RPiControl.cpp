@@ -67,7 +67,6 @@ void RPiControl::init()
     pinMode(RPI_PIN_22, INPUT);
     pinMode(RPI_POWER_PIN, OUTPUT);
     pinMode(WAKE_LED, OUTPUT);
-
     digitalWrite(RPI_PIN_16, LOW);
     // digitalWrite(RPI_PIN_22, LOW);
     digitalWrite(RPI_POWER_PIN, LOW);
@@ -76,10 +75,7 @@ void RPiControl::init()
 
 void RPiControl::recordOn()
 {
-    if (digitalRead(RPI_PIN_16) == 0)
-    {
-        digitalWrite(RPI_PIN_16, HIGH);
-    }
+        digitalWrite(RPI_PIN_16, HIGH);   
 }
 
 void RPiControl::recordOff()
@@ -92,17 +88,17 @@ void RPiControl::recordOff()
 
 void RPiControl::raspberryPower()
 {
-    if (digitalRead(RPI_POWER_PIN) == 1)
-    {
+    // if (digitalRead(RPI_POWER_PIN) == 0)
+    // {
         digitalWrite(RPI_POWER_PIN, HIGH);
-    }
+    // }
 }
 void RPiControl::raspberryOff()
 {
-    if (digitalRead(RPI_POWER_PIN) == 0)
-    {
+    // if (digitalRead(RPI_POWER_PIN) == 1)
+    // {
         digitalWrite(RPI_POWER_PIN, LOW);
-    }
+    // }
 }
 
 void RPiControl::ledPower()

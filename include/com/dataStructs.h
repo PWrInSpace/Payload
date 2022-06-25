@@ -26,7 +26,7 @@ struct DataToSD{
 
 extern volatile DataToObc dataToObc;
 extern volatile DataFromObc dataFromObc;
-extern  DataToSD dataToSD;
+extern volatile DataToSD dataToSD;
 extern volatile uint16_t sleepTime;
 
 #define MIN_SLEEP_TIME_MS 2000

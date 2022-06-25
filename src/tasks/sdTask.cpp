@@ -8,7 +8,7 @@ void sdTask(void *arg)
     DataToSD data;
     String dataPath = dataFileName;
     String logPath = logFileName;
-    uint8_t sd_i = 0;
+    uint16_t sd_i = 0;
 
     char frameToSD[SD_FRAME_ARRAY_SIZE] = {};
     char shortFrameToSD[SD_FRAME_ARRAY_SIZE] = {};

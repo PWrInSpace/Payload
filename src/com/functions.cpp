@@ -23,9 +23,10 @@ void measure()
 {
     // dataTask();
 
-    payload.vbat = analogRead(BATT_CHECK);
-    Serial.printf("voltage measure: [V]%f \n", analogRead(BATT_CHECK));
+    payload.vbat = analogRead(BATT_CHECK)/267.9;
+    Serial.printf("voltage measure: [V]%f \n", payload.vbat);
     dataToSD.vBat = payload.vbat;
+    dataToObc.vBat = payload.vbat;
     // Serial.println((void*)dataToSD);
     if (xQueueSend(payload.hardware.sdDataQueue, (void *)&dataToSD, 0) != pdTRUE)
     {
@@ -47,11 +48,6 @@ void rxNowHandler(const uint8_t *incomingData, int len)
     Serial.print("COMMAND TIME: ");
     Serial.println(dataFromObc.commandTime);
 
-    if (dataFromObc.command == 69) // turn on
-    {
-        RPiControl::raspberryPower();
-    }
-
     if (dataFromObc.command == 21) // reset
     {
         RPiControl::raspberryOff();
@@ -62,6 +58,11 @@ void rxNowHandler(const uint8_t *incomingData, int len)
     if (dataFromObc.command == 37) // turn on
     {
         RPiControl::recordOn();
+    }
+
+    if (dataFromObc.command == 69) // record off
+    {
+        RPiControl::recordOff();
     }
 }
 /**********************************************************************************************/
@@ -81,6 +82,14 @@ uint32_t getPowerTime_ms()
 void goToSleep()
 {
     // dataToObc.wakenUp = false;
+    if(payload.isRecording == true)
+    {
+        RPiControl::recordOff();
+        payload.isRecording = false;
+        dataToObc.isRecording = false;
+        dataToSD.isRecording = false;
+        vTaskDelay(10000/ portTICK_PERIOD_MS);
+    }
     esp_sleep_enable_timer_wakeup((payload.nextSendTime) * 10e2);
     esp_deep_sleep_start();
 }

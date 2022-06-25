@@ -32,7 +32,7 @@ struct PayloadControl
 {
     HardwareManagement hardware;
     PayloadControl() = default;
-    uint16_t nextSendTime = 1000;
+    uint16_t nextSendTime = 30000;
     bool isRecording = false;
     bool isRPiOn = false;
     float vbat = 0.0;
