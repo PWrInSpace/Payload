@@ -11,7 +11,7 @@ void sdTask(void *arg)
     uint16_t sd_i = 0;
 
     char frameToSD[SD_FRAME_ARRAY_SIZE] = {};
-    char shortFrameToSD[SD_FRAME_ARRAY_SIZE] = {};
+    // char shortFrameToSD[SD_FRAME_ARRAY_SIZE] = {};
 
     vTaskDelay(500 / portTICK_RATE_MS);
     xSemaphoreTake(payload.hardware.spiMutex, pdTRUE);
@@ -37,8 +37,8 @@ void sdTask(void *arg)
     {
         if (xQueueReceive(payload.hardware.sdDataQueue, (void *)&data, 0) == pdTRUE)
         {
-            snprintf(shortFrameToSD, sizeof(shortFrameToSD), "time: %5l, vbat: %f, recording: %d, isRPiOn: %d,\n",
-                     millis(), data.vBat, data.isRecording, data.isRpiOn);
+            // snprintf(shortFrameToSD, sizeof(shortFrameToSD), "time: %5l, vbat: %f, recording: %d, isRPiOn: %d,\n",
+            //          millis(), data.vBat, data.isRecording, data.isRpiOn);
 
             snprintf(frameToSD, sizeof(frameToSD), "vbat: %f, recording: %d, ax: %0.3f, ay: %0.3f, az: %0.3f, gx: %0.3f, gy: %0.3f, gz: %0.3f, mx: %0.3f, my: %0.3f, mz: %0.3f, press: %0.3f, alt: %0.3f, tempr: %0.3f\n",
                      millis(), data.vBat, data.isRecording,
@@ -49,7 +49,7 @@ void sdTask(void *arg)
 
                      
 
-            Serial.println(shortFrameToSD);
+            // Serial.println(shortFrameToSD);
             xSemaphoreTake(payload.hardware.spiMutex, portMAX_DELAY);
             if (!mySD.write(dataPath, frameToSD))
             {
