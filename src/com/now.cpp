@@ -14,6 +14,7 @@ bool nowInit()
     WiFi.mode(WIFI_STA);
     if (esp_now_init())
         return false;
+    // esp_wifi_set_mac(WIFI_IF_STA, addressPayload);
     Serial.println(WiFi.macAddress());
 
     esp_now_register_send_cb(OnDataSent);

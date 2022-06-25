@@ -25,12 +25,12 @@ void setup()
   digitalWrite(RPI_POWER_PIN, LOW);
   RPiControl::init();
   Serial.begin(115200);
-  loopTimer = 1000;
+  loopTimer = 1000; // !dodac zeby poszedl spać
   payload.hardware.imu = ImuAPI(AccelerometerScale::A_16g, GyroscpoeScale::G_1000dps);
   // set mac adress
-  // WiFi.mode(WIFI_STA);
-  // esp_wifi_set_mac(WIFI_IF_STA, addressPayload);
-  // Serial.println(WiFi.macAddress());
+  WiFi.mode(WIFI_STA);
+  esp_wifi_set_mac(WIFI_IF_STA, addressPayload);
+  Serial.println(WiFi.macAddress());
   // initPeripherals(); //ogranac imu kurw
 
   nowInit();
