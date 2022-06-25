@@ -85,6 +85,9 @@ void goToSleep()
     if(payload.isRecording == true)
     {
         RPiControl::recordOff();
+        while(payload.isRecording == true){
+            vTaskDelay( 500 / portTICK_PERIOD_MS);
+        }
         payload.isRecording = false;
         dataToObc.isRecording = false;
         dataToSD.isRecording = false;

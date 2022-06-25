@@ -21,7 +21,7 @@ char debugFrame[SD_FRAME_ARRAY_SIZE] = {};
 
 void setup()
 {
-  ESP32_blelib::init(&pCharacteristicTX, &pCharacteristicRX);
+  // ESP32_blelib::init(&pCharacteristicTX, &pCharacteristicRX);
   digitalWrite(RPI_POWER_PIN, LOW);
   RPiControl::init();
   Serial.begin(115200);
@@ -33,8 +33,8 @@ void setup()
   // Serial.println(WiFi.macAddress());
   // initPeripherals(); //ogranac imu kurw
 
-  // nowInit();
-  // nowAddPeer(addressObc, 0);
+  nowInit();
+  nowAddPeer(addressObc, 0);
 
   /// queues
   payload.hardware.sdDataQueue = xQueueCreate(SD_QUEUE_LENGTH, sizeof(DataToSD));
@@ -69,6 +69,11 @@ void loop()
     payload.isRPiOn = true;
     dataToSD.isRpiOn = true;
     dataToObc.isRpiOn = true;
+  }
+  else{
+     payload.isRPiOn = false;
+    dataToSD.isRpiOn = false;
+    dataToObc.isRpiOn = false;
   }
 
   Serial.println(debugFrame);
