@@ -25,7 +25,7 @@ void setup()
   digitalWrite(RPI_POWER_PIN, LOW);
   RPiControl::init();
   Serial.begin(115200);
-  loopTimer = 1000; // !dodac zeby poszedl spać
+  loopTimer = 30000; // !dodac zeby poszedl spać
   payload.hardware.imu = ImuAPI(AccelerometerScale::A_16g, GyroscpoeScale::G_1000dps);
   // set mac adress
   WiFi.mode(WIFI_STA);
@@ -82,7 +82,7 @@ void loop()
   {
     Serial.println("sent to obc\n");
     loopTimer = millis();
-    // esp_now_send(addressObc, (uint8_t *)&dataToObc, sizeof(dataToObc)); //uncomment
+    esp_now_send(addressObc, (uint8_t *)&dataToObc, sizeof(dataToObc)); //uncomment
   }
 
   vTaskDelay(1000 / portTICK_PERIOD_MS);
