@@ -9,7 +9,7 @@ void initPeripherals()
 {
     while (!imuInit())
     {
-        Serial.println("IMU sra");
+        Serial.println("Imu not initialized!");
     }
 
     payload.hardware.imu.begin();

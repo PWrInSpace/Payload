@@ -22,6 +22,10 @@
 #define RPI_POWER_PIN 23
 #define WAKE_LED 2
 
+// LED pins
+#define LED_RPI_READY 39
+#define LED_RPI_RECORDING 36
+#define LED_SD_GOOD 34
 
 void pinInit();
 

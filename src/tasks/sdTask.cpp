@@ -35,29 +35,26 @@ void sdTask(void *arg)
 
     while (1)
     {
-        if (xQueueReceive(payload.hardware.sdDataQueue, (void *)&data, 0) == pdTRUE)
+        // if (xQueueReceive(payload.hardware.sdDataQueue, (void *)&data, 0) == pdTRUE)
+        // {
+        // snprintf(shortFrameToSD, sizeof(shortFrameToSD), "time: %5l, vbat: %f, recording: %d, isRPiOn: %d,\n",
+        //          millis(), data.vBat, data.isRecording, data.isRpiOn);
+        data.imuData = payload.hardware.imu.getDataStruct();
+        snprintf(frameToSD, sizeof(frameToSD), "vbat: %f, recording: %d, ax: %0.3f, ay: %0.3f, az: %0.3f, gx: %0.3f, gy: %0.3f, gz: %0.3f, mx: %0.3f, my: %0.3f, mz: %0.3f, press: %0.3f, alt: %0.3f, tempr: %0.3f\n",
+                 millis(), data.vBat, data.isRecording,
+                 data.imuData.ax, data.imuData.ay, data.imuData.az,
+                 data.imuData.gx, data.imuData.gy, data.imuData.gz,
+                 data.imuData.mx, data.imuData.my, data.imuData.mz,
+                 data.imuData.pressure, data.imuData.altitude, data.imuData.temperature);
+
+        // Serial.println(shortFrameToSD);
+        xSemaphoreTake(payload.hardware.spiMutex, portMAX_DELAY);
+        if (!mySD.write(dataPath, frameToSD))
         {
-            // snprintf(shortFrameToSD, sizeof(shortFrameToSD), "time: %5l, vbat: %f, recording: %d, isRPiOn: %d,\n",
-            //          millis(), data.vBat, data.isRecording, data.isRpiOn);
-
-            snprintf(frameToSD, sizeof(frameToSD), "vbat: %f, recording: %d, ax: %0.3f, ay: %0.3f, az: %0.3f, gx: %0.3f, gy: %0.3f, gz: %0.3f, mx: %0.3f, my: %0.3f, mz: %0.3f, press: %0.3f, alt: %0.3f, tempr: %0.3f\n",
-                     millis(), data.vBat, data.isRecording,
-                     data.imuData.ax, data.imuData.ay, data.imuData.az,
-                     data.imuData.gx, data.imuData.gy, data.imuData.gz,
-                     data.imuData.mx, data.imuData.my, data.imuData.mz,
-                     data.imuData.pressure, data.imuData.altitude, data.imuData.temperature);
-
-                     
-
-            // Serial.println(shortFrameToSD);
-            xSemaphoreTake(payload.hardware.spiMutex, portMAX_DELAY);
-            if (!mySD.write(dataPath, frameToSD))
-            {
-                Serial.println("could not save in given path");
-            }
-
-            xSemaphoreGive(payload.hardware.spiMutex);
+            Serial.println("could not save in given path");
         }
-        vTaskDelay(250 / portTICK_PERIOD_MS);
+        xSemaphoreGive(payload.hardware.spiMutex);
+        // }
+        vTaskDelay(100 / portTICK_PERIOD_MS);
     }
 }

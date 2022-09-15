@@ -20,7 +20,7 @@ struct DataToSD{
     bool isRecording = false; // if rpi says it is
     bool data : 1; // if data is collected
     float vBat = 21.37; //battery voltage
-     bool isRpiOn = false;
+    bool isRpiOn = false;
     ImuData imuData;
 };
 

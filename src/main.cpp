@@ -31,11 +31,9 @@ void setup()
   WiFi.mode(WIFI_STA);
   esp_wifi_set_mac(WIFI_IF_STA, addressPayload);
   Serial.println(WiFi.macAddress());
-  // initPeripherals(); //ogranac imu kurw
-
   nowInit();
   nowAddPeer(addressObc, 0);
-
+  initPeripherals(); //ogranac imu kurw
   /// queues
   payload.hardware.sdDataQueue = xQueueCreate(SD_QUEUE_LENGTH, sizeof(DataToSD));
   /// semaphores
@@ -46,9 +44,7 @@ void setup()
 
 void loop()
 {
-
   measure();
-
   snprintf(debugFrame, sizeof(debugFrame), "time: %5l, vbat: %f, recording: %d, isRPiOn: %d,\n",
            millis(), dataToObc.vBat, dataToObc.isRecording, dataToObc.isRpiOn);
 
