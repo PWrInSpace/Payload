@@ -3,7 +3,7 @@
 #include <Arduino.h>
 
 
-#define BATT_CHECK 36 // Sens VP
+#define BATT_CHECK 27 // Sens VP
 
 // SPI
 #define MOSI 13

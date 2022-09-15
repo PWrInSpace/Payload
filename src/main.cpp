@@ -73,6 +73,7 @@ void loop()
   }
 
   Serial.println(debugFrame);
+  
 
   if (millis() - loopTimer >= payload.nextSendTime)
   {

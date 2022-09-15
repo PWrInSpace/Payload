@@ -22,8 +22,9 @@ void initPeripherals()
 void measure()
 {
     // dataTask();
-
-    payload.vbat = analogRead(BATT_CHECK)/267.9;
+    //hehe dzielnik 10k || 10k 
+    // vbat = read*2
+    payload.vbat = analogRead(BATT_CHECK)/VOLT_DIV_SCALER;
     Serial.printf("voltage measure: [V]%f \n", payload.vbat);
     dataToSD.vBat = payload.vbat;
     dataToObc.vBat = payload.vbat;
@@ -51,7 +52,7 @@ void rxNowHandler(const uint8_t *incomingData, int len)
     if (dataFromObc.command == 21) // reset
     {
         RPiControl::raspberryOff();
-        vTaskDelay(1000);
+        vTaskDelay(1500);
         RPiControl::raspberryPower();
     }
 
