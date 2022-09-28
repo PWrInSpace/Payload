@@ -35,10 +35,10 @@ void sdTask(void *arg)
     xSemaphoreGive(payload.hardware.spiMutex);
 
     digitalWrite(LED_SD_GOOD,HIGH);
-    
+
     while (1)
     {
-    data.vBat = analogRead(BATT_CHECK)/VOLT_DIV_SCALER;
+    data.vBat = analogRead(BATT_CHECK) * VOLT_DIV_SCALER;
         // if (xQueueReceive(payload.hardware.sdDataQueue, (void *)&data, 0) == pdTRUE)
         // {
         // snprintf(shortFrameToSD, sizeof(shortFrameToSD), "time: %5l, vbat: %f, recording: %d, isRPiOn: %d,\n",

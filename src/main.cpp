@@ -43,6 +43,9 @@ void setup()
   payload.hardware.spiMutex = xSemaphoreCreateMutex();
   payload.hardware.i2cMutex = xSemaphoreCreateMutex();
   xTaskCreatePinnedToCore(sdTask, "SD task", 30000, NULL, 3, &payload.hardware.sdTask, APP_CPU_NUM);
+  digitalWrite(LED_RPI_READY,HIGH);
+  digitalWrite(LED_RPI_RECORDING,HIGH);
+  digitalWrite(LED_SD_GOOD,HIGH);
 }
 
 void loop()
