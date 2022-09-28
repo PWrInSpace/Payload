@@ -3,7 +3,7 @@
 #include <Arduino.h>
 
 
-#define BATT_CHECK 27
+#define BATT_CHECK 27 // in use by wifi
 
 // SPI
 #define MOSI 13

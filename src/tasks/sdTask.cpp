@@ -19,11 +19,12 @@ void sdTask(void *arg)
     while (!mySD.init())
     {
         Serial.println("SD INIT ERROR!"); // DEBUG
-
+        digitalWrite(LED_SD_GOOD,HIGH);
         xSemaphoreGive(payload.hardware.spiMutex);
 
         vTaskDelay(500 / portTICK_PERIOD_MS);
         xSemaphoreTake(payload.hardware.spiMutex, pdTRUE);
+        digitalWrite(LED_SD_GOOD,HIGH);
     }
     while (mySD.fileExists(dataPath + String(sd_i) + ".txt"))
     {
@@ -33,6 +34,8 @@ void sdTask(void *arg)
     logPath = logPath + String(sd_i) + ".txt";
     xSemaphoreGive(payload.hardware.spiMutex);
 
+    digitalWrite(LED_SD_GOOD,HIGH);
+    
     while (1)
     {
     data.vBat = analogRead(BATT_CHECK)/VOLT_DIV_SCALER;

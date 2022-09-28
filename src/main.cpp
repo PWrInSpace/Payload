@@ -25,7 +25,7 @@ void setup()
   digitalWrite(RPI_POWER_PIN, LOW);
   RPiControl::init();
   Serial.begin(115200);
-  loopTimer = 30000; // !dodac zeby poszedl spać
+  loopTimer = 300000; // !dodac zeby poszedl spać
   payload.hardware.imu = ImuAPI(AccelerometerScale::A_16g, GyroscpoeScale::G_1000dps);
   // set mac adress
   WiFi.mode(WIFI_STA);
@@ -33,7 +33,8 @@ void setup()
   Serial.println(WiFi.macAddress());
   nowInit();
   nowAddPeer(addressObc, 0);
-  initPeripherals(); //ogranac imu kurw
+  // initPeripherals(); //ogranac imu kurw
+  pinInit();
   /// queues
   payload.hardware.sdDataQueue = xQueueCreate(SD_QUEUE_LENGTH, sizeof(DataToSD));
   /// semaphores
