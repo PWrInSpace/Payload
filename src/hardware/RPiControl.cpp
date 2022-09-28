@@ -25,7 +25,7 @@ void RPiControl::resolveCommand(std::string command)
     {
         msg = "CAM is on";
         RPiControl::recordOn();
-        RPiControl::ledPower();
+        RPiControl::ledOn();
         break;
     }
     case CAM_OFF:
@@ -47,6 +47,18 @@ void RPiControl::resolveCommand(std::string command)
         RPiControl::raspberryOff();
         break;
     }
+    case LED_ON:
+    {
+        msg = "LED on";
+        RPiControl::ledOn();
+        break;
+    }
+    case LED_OFF:
+    {
+        msg = "LED off";
+        RPiControl::ledOff();
+        break;
+    }
     case WRNG_COMMND:
     {
         break;
@@ -65,7 +77,7 @@ void RPiControl::init()
     digitalWrite(RPI_PIN_16, LOW);
     // digitalWrite(RPI_PIN_22, LOW);
     digitalWrite(RPI_POWER_PIN, LOW);
-    digitalWrite(WAKE_LED, LOW);
+    digitalWrite(WAKE_LED, HIGH);
 }
 
 void RPiControl::recordOn()
@@ -96,17 +108,11 @@ void RPiControl::raspberryOff()
     // }
 }
 
-void RPiControl::ledPower()
+void RPiControl::ledOn()
 {
-    if (digitalRead(WAKE_LED) == 0)
-    {
         digitalWrite(WAKE_LED, HIGH);
-    }
 }
 void RPiControl::ledOff()
 {
-    if (digitalRead(WAKE_LED) == 1)
-    {
         digitalWrite(WAKE_LED, LOW);
-    }
 }

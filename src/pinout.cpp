@@ -7,7 +7,7 @@ void pinInit()
     pinMode(RPI_PIN_22, INPUT);
     pinMode(RPI_POWER_PIN, OUTPUT);
     pinMode(WAKE_LED, OUTPUT);
-    // pinMode(BATT_CHECK, INPUT);
+    pinMode(BATT_CHECK, INPUT);
     pinMode(SD_CS, OUTPUT);
     // pinMode(LED_RPI_READY, OUTPUT);
     // pinMode(LED_RPI_RECORDING, OUTPUT); //cholera te piny są input only

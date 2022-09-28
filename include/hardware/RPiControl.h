@@ -15,7 +15,7 @@ public:
     static void recordOff();
     static void raspberryPower();
     static void raspberryOff();
-    static void ledPower();
+    static void ledOn();
     static void ledOff();
     static void init();
     static void resolveCommand(std::string command);
@@ -26,6 +26,8 @@ public:
         CAM_OFF = 1,
         RPI_ON = 2,
         RPI_OFF = 3,
+        LED_ON = 4,
+        LED_OFF = 5,
         WRNG_COMMND = -1
     } ;
 

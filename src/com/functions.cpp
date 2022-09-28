@@ -24,7 +24,7 @@ void measure()
     // dataTask();
     //hehe dzielnik 10k || 10k 
     // vbat = read*2
-    payload.vbat = analogRead(BATT_CHECK)/VOLT_DIV_SCALER;
+    payload.vbat = float(analogRead(BATT_CHECK) * VOLT_DIV_SCALER);
     Serial.printf("voltage measure: [V]%f \n", payload.vbat);
     dataToSD.vBat = payload.vbat;
     dataToObc.vBat = payload.vbat;
