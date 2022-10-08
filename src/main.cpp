@@ -43,9 +43,7 @@ void setup()
   payload.hardware.spiMutex = xSemaphoreCreateMutex();
   payload.hardware.i2cMutex = xSemaphoreCreateMutex();
   xTaskCreatePinnedToCore(sdTask, "SD task", 30000, NULL, 3, &payload.hardware.sdTask, APP_CPU_NUM);
-  digitalWrite(LED_RPI_READY,HIGH);
-  digitalWrite(LED_RPI_RECORDING,HIGH);
-  digitalWrite(LED_SD_GOOD,HIGH);
+  
 }
 
 void loop()
@@ -59,23 +57,27 @@ void loop()
     dataToObc.isRecording = true;
     payload.isRecording = true;
     dataToSD.isRecording = true;
+    digitalWrite(LED_RPI_RECORDING,HIGH);
   }
   else
   {
     dataToObc.isRecording = false;
     payload.isRecording = false;
     dataToSD.isRecording = false;
+     digitalWrite(LED_RPI_RECORDING,LOW);
   }
   if (digitalRead(RPI_PIN_18) == HIGH)
   { // check if programm initialized properly - pin should go high
     payload.isRPiOn = true;
     dataToSD.isRpiOn = true;
     dataToObc.isRpiOn = true;
+    digitalWrite(LED_RPI_READY,HIGH);
   }
   else{
      payload.isRPiOn = false;
     dataToSD.isRpiOn = false;
     dataToObc.isRpiOn = false;
+     digitalWrite(LED_RPI_READY,LOW);
   }
 
   Serial.println(debugFrame);

@@ -19,7 +19,7 @@ void ESP32_blelib::init(BLECharacteristic *pCharacteristicTX, BLECharacteristic 
     pCharacteristicRX->setValue("default");
     pCharacteristicTX->addDescriptor(new BLE2902());
 
-    pServer->getAdvertising()->addServiceUUID(serviceID);
+    pServer->getAdvertising()->addServiceUUID(SERVICE_UUID);
     pService->start();
     pServer->getAdvertising()->start();
     Serial.println("Waiting for a Client to connect...");

@@ -77,7 +77,7 @@ void RPiControl::init()
     digitalWrite(RPI_PIN_16, LOW);
     // digitalWrite(RPI_PIN_22, LOW);
     digitalWrite(RPI_POWER_PIN, LOW);
-    digitalWrite(WAKE_LED, HIGH);
+    digitalWrite(RPI_LED, HIGH);
 }
 
 void RPiControl::recordOn()
@@ -110,9 +110,9 @@ void RPiControl::raspberryOff()
 
 void RPiControl::ledOn()
 {
-        digitalWrite(WAKE_LED, HIGH);
+        digitalWrite(RPI_LED, HIGH);
 }
 void RPiControl::ledOff()
 {
-        digitalWrite(WAKE_LED, LOW);
+        digitalWrite(RPI_LED, LOW);
 }

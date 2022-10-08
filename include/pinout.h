@@ -20,7 +20,7 @@
 #define RPI_PIN_18 18
 #define RPI_PIN_22 19
 #define RPI_POWER_PIN 23
-#define WAKE_LED 2
+#define RPI_LED 2
 
 // LED pins
 #define LED_RPI_READY 33
