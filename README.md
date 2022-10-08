@@ -11,3 +11,4 @@ Hardware:
 
 Software:
 
+![Riccardo](riccardo.gif)
