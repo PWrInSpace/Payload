@@ -21,19 +21,18 @@ char debugFrame[SD_FRAME_ARRAY_SIZE] = {};
 
 void setup()
 {
-  ESP32_blelib::init(&pCharacteristicTX, &pCharacteristicRX);
+  // ESP32_blelib::init(&pCharacteristicTX, &pCharacteristicRX);
   digitalWrite(RPI_POWER_PIN, LOW);
   RPiControl::init();
   Serial.begin(115200);
-  loopTimer = 300000; // !dodac zeby poszedl spać
+  loopTimer = 3000; // !dodac zeby poszedl spać
   payload.hardware.imu = ImuAPI(AccelerometerScale::A_16g, GyroscpoeScale::G_1000dps);
   // set mac adress
-  // WiFi.mode(WIFI_STA);
-  // esp_wifi_set_mac(WIFI_IF_STA, addressPayload);
-  // Serial.println(WiFi.macAddress());
-  // nowInit();
-  // nowAddPeer(addressObc, 0);
-
+  WiFi.mode(WIFI_STA);
+  esp_wifi_set_mac(WIFI_IF_STA, addressPayload);
+  Serial.println(WiFi.macAddress());
+  nowInit();
+  nowAddPeer(addressObc, 0);
 
   // initPeripherals(); //ogranac imu kurw
   pinInit();
@@ -43,7 +42,6 @@ void setup()
   payload.hardware.spiMutex = xSemaphoreCreateMutex();
   payload.hardware.i2cMutex = xSemaphoreCreateMutex();
   xTaskCreatePinnedToCore(sdTask, "SD task", 30000, NULL, 3, &payload.hardware.sdTask, APP_CPU_NUM);
-  
 }
 
 void loop()
@@ -57,38 +55,38 @@ void loop()
     dataToObc.isRecording = true;
     payload.isRecording = true;
     dataToSD.isRecording = true;
-    digitalWrite(LED_RPI_RECORDING,HIGH);
+    digitalWrite(LED_RPI_RECORDING, HIGH);
   }
   else
   {
     dataToObc.isRecording = false;
     payload.isRecording = false;
     dataToSD.isRecording = false;
-     digitalWrite(LED_RPI_RECORDING,LOW);
+    digitalWrite(LED_RPI_RECORDING, LOW);
   }
   if (digitalRead(RPI_PIN_18) == HIGH)
   { // check if programm initialized properly - pin should go high
     payload.isRPiOn = true;
     dataToSD.isRpiOn = true;
     dataToObc.isRpiOn = true;
-    digitalWrite(LED_RPI_READY,HIGH);
+    digitalWrite(LED_RPI_READY, HIGH);
   }
-  else{
-     payload.isRPiOn = false;
+  else
+  {
+    payload.isRPiOn = false;
     dataToSD.isRpiOn = false;
     dataToObc.isRpiOn = false;
-     digitalWrite(LED_RPI_READY,LOW);
+    digitalWrite(LED_RPI_READY, LOW);
   }
 
   Serial.println(debugFrame);
-  
 
-  // if (millis() - loopTimer >= payload.nextSendTime)
-  // {
+  if (millis() - loopTimer >= payload.nextSendTime)
+  {
     Serial.println("sent to obc\n");
-  //   loopTimer = millis();
-  //   esp_now_send(addressObc, (uint8_t *)&dataToObc, sizeof(dataToObc)); //uncomment
-  // }
+    loopTimer = millis();
+    esp_now_send(addressObc, (uint8_t *)&dataToObc, sizeof(dataToObc)); // uncomment
+  }
 
   vTaskDelay(1000 / portTICK_PERIOD_MS);
 }
