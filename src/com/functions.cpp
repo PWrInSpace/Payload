@@ -59,6 +59,7 @@ void rxNowHandler(const uint8_t *incomingData, int len)
     if (dataFromObc.command == 37) // turn on
     {
         RPiControl::recordOn();
+        RPiControl::ledOn();
     }
 
     if (dataFromObc.command == 69) // record off
