@@ -4,6 +4,7 @@
 #include <SD.h>
 
 #define ADC_SIZE 340
+#define QUE_SIZE 40
 
 struct Frame {
 
@@ -16,6 +17,7 @@ struct Frame {
 
 QueueHandle_t quehandle;
 ADC_HandleTypeDef hadc1;
+Frame frame[QUE_SIZE];
 
 void MX_ADC1_Init(void) {
   ADC_ChannelConfTypeDef sConfig = {0};
@@ -59,13 +61,43 @@ void MX_ADC1_Init(void) {
   }
 }
 
+HardwareSerial Serial2(USART2);
+
+/****************************************************/
+
+void sd_init() {
+
+    // INIT_SD:
+    SPI.begin();
+    if (SD.begin(1000000,PB0)) Serial2.println("SD Działa!");
+    else Serial2.println("SD Nie Działa!");
+}
+
+void sd_append() {
+
+    File dataFile;
+
+    for (uint8_t j = 0; j < QUE_SIZE; j++) {
+
+        // ZAPIS SD:
+        dataFile = SD.open("datalog.bin", FILE_WRITE);
+        dataFile.write((uint8_t*) &frame[j], sizeof(Frame));
+        dataFile.close();
+    }
+}
+
 /****************************************************/
 
 void sd_task(void* args) {
 
+    Serial2.begin(115200);
+    Serial2.println("Working");
+
+    Serial2.println("Task SD działa");
+
     // INIT_SD:
     SPI.begin();
-    SD.begin(PB0);
+    if (SD.begin(PB0)) Serial2.println("SD Działa!");
     File dataFile;
 
     while(1) {
@@ -78,7 +110,7 @@ void sd_task(void* args) {
                 xQueueReceive(quehandle, &frame, portMAX_DELAY);
 
                 // ZAPIS SD:
-                dataFile = SD.open("datalog.txt", FILE_WRITE);
+                dataFile = SD.open("datalog.bin", FILE_WRITE);
                 dataFile.write((uint8_t*) &frame, sizeof(Frame));
                 dataFile.close();
             }
@@ -95,28 +127,39 @@ void setup() {
     MX_ADC1_Init();
     HAL_ADC_Start(&hadc1);
 
-    quehandle = xQueueCreate(50, sizeof(Frame));
-    xTaskCreate(sd_task, "SD Task", 32768, NULL, 1, NULL);
+    Serial2.begin(115200);
+    Serial2.println("Working");
+
+    //quehandle = xQueueCreate(50, sizeof(Frame));
+    //xTaskCreate(sd_task, "SD Task", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
+
+    //vTaskStartScheduler();
+
+    sd_init();
 }
 
 void loop() {
 
-    Frame frame;
     uint32_t lastMesTime;
-    frame.time = lastMesTime;
 
-    for (uint32_t i = 0; i < ADC_SIZE; i++) {
+    for (uint8_t j = 0; j < QUE_SIZE; j++) {
 
-        while (micros() - lastMesTime < 10);
-        lastMesTime = micros();
+        frame[j].time = lastMesTime;
 
-        HAL_ADC_PollForConversion(&hadc1, 1);
-        frame.adc[i][0] = HAL_ADC_GetValue(&hadc1);
-        HAL_ADC_PollForConversion(&hadc1, 1);
-        frame.adc[i][1] = HAL_ADC_GetValue(&hadc1);
-        HAL_ADC_PollForConversion(&hadc1, 1);
-        frame.adc[i][2] = HAL_ADC_GetValue(&hadc1);
+        for (uint32_t i = 0; i < ADC_SIZE; i++) {
+
+            while (micros() - lastMesTime < 10);
+            lastMesTime = micros();
+
+            HAL_ADC_PollForConversion(&hadc1, 1);
+            frame[j].adc[i][0] = HAL_ADC_GetValue(&hadc1);
+            HAL_ADC_PollForConversion(&hadc1, 1);
+            frame[j].adc[i][1] = HAL_ADC_GetValue(&hadc1);
+            HAL_ADC_PollForConversion(&hadc1, 1);
+            frame[j].adc[i][2] = HAL_ADC_GetValue(&hadc1);
+        }
     }
 
-    xQueueSend(quehandle, &frame, 2);
+    sd_append();
+    //xQueueSend(quehandle, &frame, 2);
 }
