@@ -108,6 +108,7 @@ int main(void)
   HAL_ADC_Start(&hadc1);
   HAL_TIM_Base_Init(&htim2);
   HAL_TIM_Base_MspInit(&htim2);
+  HAL_TIM_Base_Start_IT(&htim2);
 
   fres = f_mount(&FatFs, "", 1);    //1=mount now
   if (fres != FR_OK) {

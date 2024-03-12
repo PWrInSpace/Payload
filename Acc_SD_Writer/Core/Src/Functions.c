@@ -5,7 +5,6 @@ volatile bool tickTime;
 
 void doMeasurements(Frame* frame) {
 
-	HAL_TIM_Base_Start_IT(&htim2);
 	frame->time = us_time;
 	frame->state = 33;
 
@@ -22,7 +21,6 @@ void doMeasurements(Frame* frame) {
 		HAL_ADC_PollForConversion(&hadc1, 1);
 		frame->adc[i][2] = HAL_ADC_GetValue(&hadc1);
 	}
-	HAL_TIM_Base_Stop_IT(&htim2);
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
