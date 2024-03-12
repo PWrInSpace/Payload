@@ -2,7 +2,9 @@
 #define INC_FUNCTIONS_H_
 
 #include "adc.h"
+#include "tim.h"
 #include <string.h>
+#include <stdbool.h>
 
 #define ADC_SIZE 340
 #define QUE_SIZE 40
@@ -19,5 +21,6 @@ typedef struct {
 extern uint32_t us_time;
 
 void doMeasurements(Frame* frame);
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 
 #endif /* INC_FUNCTIONS_H_ */

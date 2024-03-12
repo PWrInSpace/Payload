@@ -21,6 +21,7 @@
 #include "adc.h"
 #include "fatfs.h"
 #include "spi.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -101,9 +102,12 @@ int main(void)
   MX_FATFS_Init();
   MX_ADC1_Init();
   MX_SPI2_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
   HAL_ADC_Start(&hadc1);
+  HAL_TIM_Base_Init(&htim2);
+  HAL_TIM_Base_MspInit(&htim2);
 
   fres = f_mount(&FatFs, "", 1);    //1=mount now
   if (fres != FR_OK) {
