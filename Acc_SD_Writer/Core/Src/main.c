@@ -52,6 +52,10 @@
 
 Frame frames[QUE_SIZE];
 
+FATFS       FatFs;                //Fatfs handle
+FIL         fil;                  //File handle
+FRESULT     fres;                 //Result after operations
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -101,20 +105,36 @@ int main(void)
 
   HAL_ADC_Start(&hadc1);
 
+  fres = f_mount(&FatFs, "", 1);    //1=mount now
+  if (fres != FR_OK) {
+
+	char error_card[] = "Brak karty";
+	HAL_UART_Transmit(&huart2, (uint8_t*) error_card, strlen(error_card), 1);
+  }
+
+  uint32_t bw;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  // TODO Odczyt:
-
+	  // Odczyt:
 	  for (uint16_t i = 0; i < QUE_SIZE; i ++) {
 
 		  doMeasurements(&frames[i]);
 	  }
 
-	  // TODO Zapis:
+	  // Zapis:
+	  fres = f_open(&fil, "Lot.bin", FA_OPEN_ALWAYS | FA_OPEN_APPEND | FA_WRITE);
+
+	  for (uint16_t i = 0; i < QUE_SIZE; i ++) {
+
+		  fres = f_write(&fil, (uint8_t*) &frames[i], sizeof(Frame), (UINT*) &bw);
+	  }
+
+	  fres = f_close(&fil);
 
 
     /* USER CODE END WHILE */

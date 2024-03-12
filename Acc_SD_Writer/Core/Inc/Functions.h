@@ -2,6 +2,7 @@
 #define INC_FUNCTIONS_H_
 
 #include "adc.h"
+#include <string.h>
 
 #define ADC_SIZE 340
 #define QUE_SIZE 40
