@@ -29,7 +29,7 @@ static void SELECT(void)
 static void DESELECT(void)
 {
   HAL_GPIO_WritePin(SD_CS_PORT, SD_CS_PIN, GPIO_PIN_SET);
-  //HAL_Delay(1);
+  HAL_Delay(1);
 }
 
 /* SPI transmit a byte */

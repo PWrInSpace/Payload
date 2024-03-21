@@ -105,6 +105,7 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
+  HAL_Delay(900);
   HAL_ADC_Start(&hadc1);
   HAL_TIM_Base_Init(&htim2);
   HAL_TIM_Base_MspInit(&htim2);
@@ -132,6 +133,7 @@ int main(void)
 	  }
 
 	  // Zapis:
+	  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 1);
 	  fres = f_open(&fil, "Lot.bin", FA_OPEN_ALWAYS | FA_OPEN_APPEND | FA_WRITE);
 
 	  for (uint16_t i = 0; i < QUE_SIZE; i ++) {
@@ -140,6 +142,7 @@ int main(void)
 	  }
 
 	  fres = f_close(&fil);
+	  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 0);
 
 
     /* USER CODE END WHILE */
