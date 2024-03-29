@@ -1,11 +1,11 @@
 #include "Functions.h"
 
-uint32_t us_time;
+uint32_t dotOneMsTime;
 volatile bool tickTime;
 
 void doMeasurements(Frame* frame) {
 
-	frame->time = us_time;
+	frame->time = dotOneMsTime;
 	frame->state = 33;
 
 	for (uint16_t i = 0; i < ADC_SIZE; i ++) {
@@ -27,6 +27,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	if (htim->Instance == TIM2) {
 		tickTime = 1;
-		us_time += 10;
+		dotOneMsTime += 1;
 	}
 }

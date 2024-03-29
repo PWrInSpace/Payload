@@ -42,18 +42,20 @@ def divide_binary_file(input_file_path):
 input_file_path = 'LOT.BIN'
 binary_streams = divide_binary_file(input_file_path)
 
+j = 0
+k = 0
 for bin_stream in binary_streams:
 
-    format_string = 'I' + 'H' * 1020 + 'BBBB'
+    format_string = 'I' + 'B' * 2040 + 'BBBB'
 
     # Rozpakowanie danych binarnych
     unpacked_data = struct.unpack(format_string, bin_stream)
 
-    for i in range(0, 340):
+    for i in range(0, 680):
 
         frame = Frame()
 
-        frame.time_us = unpacked_data[0] + 10 * i
+        frame.time_us = j
         frame.x = unpacked_data[i * 3 + 1]
         frame.y = unpacked_data[i * 3 + 2]
         frame.z = unpacked_data[i * 3 + 3]
@@ -61,25 +63,29 @@ for bin_stream in binary_streams:
 
         frames.append(frame)
 
+        j+= 0.0001
+
 t = []
 x = []
 
 for frame in frames:
     t.append(frame.time_us)
-    x.append(frame.x)
-
-fs = 10_000
+    x.append(frame.y)
 
 # Usunięcie składowej stałej:
-x_ac = x - np.mean(x)
+x = x - np.mean(x)
 
-fft_result = np.fft.fft(x_ac)
-fft_freq = np.fft.fftfreq(len(fft_result), 1/fs)
+# sampling rate
+sr = 10000
+# sampling interval
+ts = 1.0/sr
+#t = np.arange(0,len(x)/sr,ts)
 
-# Wyświetlanie tylko połowy wykresu FFT (dodatnie częstotliwości)
-positive_freq_mask = fft_freq >= 0
-fft_result = fft_result[positive_freq_mask]
-fft_freq = fft_freq[positive_freq_mask]
+X = np.fft.fft(x)
+N = len(X)
+n = np.arange(N)
+T = N/sr
+freq = n/T
 
 # Wyświetlanie sygnału i jego FFT
 plt.figure(figsize=(12, 6))
@@ -93,10 +99,11 @@ plt.ylabel('Amplituda')
 
 # Wykres FFT
 plt.subplot(2, 1, 2)
-plt.plot(fft_freq, np.abs(fft_result))
+plt.plot(freq, np.abs(X))
 plt.title('x(f)')
 plt.xlabel('Częstotliwość [Hz]')
 plt.ylabel('Amplituda FFT')
+plt.xlim(-100, 5000)
 
 plt.tight_layout()
 plt.show()
