@@ -32,13 +32,13 @@ typedef enum {
     INIT_PERIOD             = SLEEP_TIME_MS,
     IDLE_PERIOD             = SLEEP_TIME_MS,
     RECOVERY_ARM_PERIOD     = SLEEP_TIME_MS,
-    FUELING_PERIOD          = 500,
-    ARMED_TO_LAUNCH_PERIOD  = 1000,
+    FUELING_PERIOD          = SLEEP_TIME_MS,
+    ARMED_TO_LAUNCH_PERIOD  = SLEEP_TIME_MS,
     RDY_TO_LAUNCH_PERIOD    = 1000,
-    COUNTDOWN_PERIOD        = 500,
-    FLIGHT_PERIOD           = 10,
-    FIRST_STAGE_REC_PERIOD  = 250,
-    SECOND_STAGE_REC_PERIOD = 500,
+    COUNTDOWN_PERIOD        = 333,
+    FLIGHT_PERIOD           = 1000,
+    FIRST_STAGE_REC_PERIOD  = 1000,
+    SECOND_STAGE_REC_PERIOD = 1000,
     ON_GROUND_PERIOD        = SLEEP_TIME_MS,
     HOLD_PERIOD             = 1000,
     ABORT_PERIOD            = SLEEP_TIME_MS
@@ -68,7 +68,7 @@ typedef struct DataToObc {
 
     bool wakenUp : 1;
     // IMPORTANT! To implementation of each module:
-
+    float power_voltage;
     // IMPORTANT END!
 } DataToObc;
 

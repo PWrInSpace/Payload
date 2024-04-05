@@ -5,7 +5,25 @@
 // IMPORTANT! To implementation of each module:
 
 void initPeripherals() {
-    #warning "Function is incomplete"
+
+    // Enable UART1:
+    uart_config_t uart_config = {
+        .baud_rate = 115200,
+        .data_bits = UART_DATA_8_BITS,
+        .parity = UART_PARITY_DISABLE,
+        .stop_bits = UART_STOP_BITS_1,
+        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE
+    };
+    uart_param_config(UART_NUM_1, &uart_config);
+    uart_set_pin(UART_NUM_1, MEASUREMENT_TX_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+    uart_driver_install(UART_NUM_1, 256, 0, 0, NULL, 0);
+
+    // Enable ADC1:
+    adc1_config_width(ADC_WIDTH_BIT_12); // Ustawienie rozdzielczości na 12 bitów
+    adc1_config_channel_atten(ADC1_CHANNEL_6, ADC_ATTEN_DB_0);
+
+    // Configure mosfet pin:
+    gpio_set_direction(MOSFET_PIN, GPIO_MODE_OUTPUT);
 }
 
 /**********************************************************************************************/
@@ -13,7 +31,22 @@ void initPeripherals() {
 // To implementation of each module:
 
 void measure() {
-    #warning "Function is incomplete"
+
+    // Measure battery voltage with ADC:
+    moduleData.dataToObc.power_voltage = adc1_get_raw((adc1_channel_t)ADC1_CHANNEL_6) * 3.3 / 4095 * 3;
+
+    if (moduleData.obcState >= COUNTDOWN && moduleData.obcState <= SECOND_STAGE_RECOVERY) {
+
+        // Enable mosfet:
+        gpio_set_level(MOSFET_PIN, 1);
+
+        // Send state number by UART1 to measurement boards:
+        uart_write_bytes(UART_NUM_1, (void*) &moduleData.obcState, sizeof(moduleData.obcState));
+    }
+    else {
+        // Disable mosfet:
+        gpio_set_level(MOSFET_PIN, 0);
+    }
 }
 
 /**********************************************************************************************/
@@ -28,7 +61,7 @@ void rxNowHandler(const uint8_t *incomingData, int len) {
         memcpy((uint8_t*) &rxData, incomingData, len);
         // From this moment you can use rxData.commandNum and rxData.commandArg.
 
-        #warning "Function is incomplete"
+        // Nothing to do here in Payload :)
     }
 }
 

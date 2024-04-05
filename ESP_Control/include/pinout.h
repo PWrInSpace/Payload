@@ -12,4 +12,9 @@
 // Boot button:
 #define BOOT_BUTTON_PIN 0
 
+// Payload Control pins:
+#define MEASUREMENT_TX_PIN 27
+#define MOSFET_PIN 25
+#define V_SENSE_PIN 34
+
 #endif

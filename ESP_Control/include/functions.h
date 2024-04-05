@@ -8,6 +8,8 @@
 #include "now.h"
 #include "driver/spi_master.h"
 #include "driver/sdspi_host.h"
+#include "driver/adc.h"
+#include "driver/gpio.h"
 #include "esp_timer.h"
 #include "cmd.h"
 
