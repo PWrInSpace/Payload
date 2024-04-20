@@ -57,7 +57,7 @@ void app_main() {
             esp_now_send(adressObc, (uint8_t *) &moduleData.dataToObc, sizeof(moduleData.dataToObc));
         }
 
-        vTaskDelay(1 / portTICK_PERIOD_MS);
+        vTaskDelay(10 / portTICK_PERIOD_MS);
         // Check things related to sleep mode and eventually go to sleep:
         checkSleepThings();
 
