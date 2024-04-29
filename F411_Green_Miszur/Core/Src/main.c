@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "dma.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -96,6 +97,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_ADC1_Init();
   MX_SPI1_Init();
   MX_TIM1_Init();
@@ -124,6 +126,7 @@ int main(void)
   //HAL_Delay(3000);
   uint8_t flashBuf[BUF_SIZE];
   uint16_t slot_page_offset;
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adctest, 3);
 
   /* USER CODE END 2 */
 
@@ -205,15 +208,18 @@ int main(void)
 		  loadProgData(0, flashBuf, BUF_SIZE);
 		  ProgramExecute(CONFIGURATION_PAGE);
 
-		  // Flash slot erase:
-		  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
-		  for (uint16_t j = 0; j < SLOT_PAGE_NUMBER; j += PAGES_IN_BLOCK) {
+		  // Flash slot erase (only in state 6):
+		  if (rocketState >= 6) {
 
-			  blockErase(j + slot_page_offset);
+			  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
+			  for (uint16_t j = 0; j < SLOT_PAGE_NUMBER; j += PAGES_IN_BLOCK) {
+
+				  blockErase(j + slot_page_offset);
+			  }
+
+			  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
+			  HAL_Delay(1000);
 		  }
-
-		  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
-		  HAL_Delay(1000);
 
 		  // Save start:
 		  for (uint16_t j = 0; j < SLOT_PAGE_NUMBER; j++) {
