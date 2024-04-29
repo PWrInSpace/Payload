@@ -3,6 +3,7 @@
 uint32_t dotOneMsTime;
 volatile bool tickTime;
 uint8_t rocketState;
+uint16_t adctest[ADC_NO];
 
 void doMeasurements(Frame* frame) {
 
@@ -15,12 +16,9 @@ void doMeasurements(Frame* frame) {
 		while (!tickTime);
 		tickTime = 0;
 
-		HAL_ADC_PollForConversion(&hadc1, 1);
-		frame->adc[i][0] = HAL_ADC_GetValue(&hadc1);
-		HAL_ADC_PollForConversion(&hadc1, 1);
-		frame->adc[i][1] = HAL_ADC_GetValue(&hadc1);
-		HAL_ADC_PollForConversion(&hadc1, 1);
-		frame->adc[i][2] = HAL_ADC_GetValue(&hadc1);
+		frame->adc[i][0] = adctest[0];
+		frame->adc[i][1] = adctest[1];
+		frame->adc[i][2] = adctest[2];
 	}
 }
 

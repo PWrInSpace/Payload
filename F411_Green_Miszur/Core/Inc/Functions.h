@@ -27,6 +27,7 @@ typedef struct {
 
 extern uint32_t dotOneMsTime;
 extern uint8_t rocketState;
+extern uint16_t adctest[ADC_NO];
 
 void doMeasurements(Frame* frame);
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
