@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import struct
+import sys
 
 class Frame:
 
@@ -79,7 +80,7 @@ if __name__ == "__main__":
 
     print("Welcome to Flash Reader for Payload 2024 - vibration measurements")
 
-    input_file = "cutecom.log"
+    input_file = sys.argv[1]
     output_files = ["outA.csv", "outB.csv"]
 
     content_dict = read_binary_file(input_file)
