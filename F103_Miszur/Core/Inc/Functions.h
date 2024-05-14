@@ -4,6 +4,7 @@
 #include "adc.h"
 #include "tim.h"
 #include "usart.h"
+#include "adc.h"
 #include <string.h>
 #include <stdbool.h>
 

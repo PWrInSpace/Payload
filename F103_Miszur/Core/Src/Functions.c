@@ -16,9 +16,9 @@ void doMeasurements(Frame* frame) {
 		while (!tickTime);
 		tickTime = 0;
 
-		frame->adc[i][0] = adctest[0];
-		frame->adc[i][1] = adctest[1];
-		frame->adc[i][2] = adctest[2];
+		frame->adc[i][0] = adctest[0] >> 4;
+		frame->adc[i][1] = adctest[1] >> 4;
+		frame->adc[i][2] = adctest[2] >> 4;
 	}
 }
 

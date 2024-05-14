@@ -121,10 +121,27 @@ int main(void)
 	  HAL_Delay(1000);
 	}
 
+
+	/*GPIO_InitTypeDef GPIO_InitStruct = {0};
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, 0);
+
+	GPIO_InitStruct.Pin = GPIO_PIN_12;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
+	HAL_Delay(100);
+
+	HAL_GPIO_DeInit(GPIOA, GPIO_PIN_12);
+
+	MX_USB_DEVICE_Init();*/
+
+
+
 	HAL_Delay(3000);
 	uint8_t flashBuf[BUF_SIZE];
 	uint16_t slot_page_offset;
-	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adctest, 3);
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adctest, ADC_NO);
 
   /* USER CODE END 2 */
 
@@ -141,6 +158,7 @@ int main(void)
 			  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
 			  HAL_Delay(500);
 		  }
+		  HAL_GPIO_WritePin(USB_PULL_GPIO_Port, USB_PULL_Pin, 0);
 
 		  // Here USB read:
 		  while (!txRequest) HAL_Delay(1);
