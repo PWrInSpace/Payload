@@ -2,3 +2,4 @@
 .vscode
 Debug
 .settings
+__pycache__
