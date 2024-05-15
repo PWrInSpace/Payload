@@ -18,7 +18,7 @@ if __name__ == "__main__":
         read_from_serial(input_stream, bin_file_name)
         serial_mode = True
 
-    output_files = [time.strftime("payload_slot_A_%Y-%m-%d_%H%M%S.csv"), "payload_slot_B_%Y-%m-%d_%H%M%S.csv"]
+    output_files = [time.strftime("payload_slot_A_%Y-%m-%d_%H%M%S.csv"), time.strftime("payload_slot_B_%Y-%m-%d_%H%M%S.csv")]
 
     content_dict = read_binary_file(bin_file_name if serial_mode else input_stream)
 
