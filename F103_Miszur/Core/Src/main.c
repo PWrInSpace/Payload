@@ -121,23 +121,6 @@ int main(void)
 	  HAL_Delay(1000);
 	}
 
-
-	/*GPIO_InitTypeDef GPIO_InitStruct = {0};
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, 0);
-
-	GPIO_InitStruct.Pin = GPIO_PIN_12;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
-	HAL_Delay(100);
-
-	HAL_GPIO_DeInit(GPIOA, GPIO_PIN_12);
-
-	MX_USB_DEVICE_Init();*/
-
-
-
 	HAL_Delay(3000);
 	uint8_t flashBuf[BUF_SIZE];
 	uint16_t slot_page_offset;
