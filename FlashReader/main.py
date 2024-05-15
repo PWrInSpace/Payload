@@ -1,89 +1,26 @@
 #!/usr/bin/python3
 
-import struct
+from data_parser import read_binary_file
+from serial_reader import read_from_serial
+
 import sys
-
-class Frame:
-
-    time_us = 0
-    x = 0
-    y = 0
-    z = 0
-    state = 0
-
-    def toString(self):
-        return f"{self.time_us}; {self.x}; {self.y}; {self.z}; {self.state}"
-
-frame_time = 0
-
-def stream_to_frames(stream) -> Frame:
-
-    global frame_time
-    format_string = "<I2040B4B"
-    decoded_data = struct.unpack(format_string, stream)
-
-    frames_list = []
-
-    for i in range(680):
-        frame = Frame()
-
-        frame.time_us = frame_time
-        frame.x = decoded_data[i * 3 + 1]
-        frame.y = decoded_data[i * 3 + 2]
-        frame.z = decoded_data[i * 3 + 3]
-        frame.state = decoded_data[-4]
-
-        if frame.state == 255:
-            continue
-        frames_list.append(frame)
-
-        frame_time += 0.0001
-
-    return frames_list
-
-def read_binary_file(file_path) -> dict:
-
-    data_dict = {}
-    current_slot = None
-
-    with open(file_path, 'rb') as file:
-        
-        file_content = file.read()
-
-    if file_content[0:6] == b"SLOT_A":
-        
-        current_slot = "SLOT_A"
-        data_dict[current_slot] = []
-        file_content = file_content[6:]
-        print("Parsing SLOT_A")
-
-        while len(file_content) > 0:
-
-            if file_content[0:6] == b"SLOT_B":
-                current_slot = "SLOT_B"
-                data_dict[current_slot] = []
-                file_content = file_content[6:]
-                print("Parsing SLOT_B")
-            
-            else:
-                stream = file_content[0:2048]
-                measurements_list = stream_to_frames(stream)
-                data_dict[current_slot].extend(measurements_list)
-                file_content = file_content[2048:]
-    
-    else:
-        print("Error, no SLOT_A")
-
-    return data_dict
+import time
 
 if __name__ == "__main__":
 
     print("Welcome to Flash Reader for Payload 2024 - vibration measurements")
 
-    input_file = sys.argv[1]
-    output_files = ["outA.csv", "outB.csv"]
+    input_stream = sys.argv[1]
+    serial_mode = False
+    bin_file_name = time.strftime("binary_payload_data_%Y-%m-%d_%H%M%S.bin")
 
-    content_dict = read_binary_file(input_file)
+    if "/dev/tty" in input_stream or "COM" in input_stream:
+        read_from_serial(input_stream, bin_file_name)
+        serial_mode = True
+
+    output_files = [time.strftime("payload_slot_A_%Y-%m-%d_%H%M%S.csv"), "payload_slot_B_%Y-%m-%d_%H%M%S.csv"]
+
+    content_dict = read_binary_file(bin_file_name if serial_mode else input_stream)
 
     slot_a_list = content_dict["SLOT_A"]
     with open(output_files[0], "w") as file:
