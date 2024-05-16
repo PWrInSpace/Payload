@@ -113,6 +113,8 @@ int main(void)
 	HAL_TIM_Base_Start_IT(&htim1);
 	HAL_UART_Receive_IT(&huart1, &rocketState, 1);
 
+	rocketState = 0;
+
 	// Init Flash:
 	uint8_t ret = 1;
 	while(ret) {
@@ -286,7 +288,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC|RCC_PERIPHCLK_USB;
-  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV4;
+  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV8;
   PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_PLL;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
