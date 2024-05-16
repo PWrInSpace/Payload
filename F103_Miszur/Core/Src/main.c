@@ -168,7 +168,7 @@ int main(void)
 		  }
 
 		  // SLOT B read:
-		  slot_page_offset = SLOT_B_OFFSET;
+		  /*slot_page_offset = SLOT_B_OFFSET;
 		  slot_info[5] = 'B';
 		  HAL_Delay(10);
 		  CDC_Transmit_FS((uint8_t*) slot_info, strlen(slot_info));
@@ -186,13 +186,13 @@ int main(void)
 			  if (empty) break;
 			  else CDC_Transmit_FS(flashBuf, sizeof(Frame));
 			  HAL_Delay(1);
-		  }
+		  }*/
 	  }
 
 	  if (rocketState >= 6) {
 
 		  // Flash slot change:
-		  pageDataRead(CONFIGURATION_PAGE);
+		  /*pageDataRead(CONFIGURATION_PAGE);
 		  read(0, flashBuf, BUF_SIZE);
 
 		  uint8_t isSlot_A = flashBuf[0];
@@ -209,6 +209,8 @@ int main(void)
 		  }
 		  loadProgData(0, flashBuf, BUF_SIZE);
 		  ProgramExecute(CONFIGURATION_PAGE);
+		  */
+		  slot_page_offset = SLOT_A_OFFSET; // DEBUG ONLY
 
 		  // Flash slot erase (only in state 6):
 		  if (rocketState == 6) {
