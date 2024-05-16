@@ -162,6 +162,7 @@ int main(void)
 			  }
 			  if (empty) break;
 			  else CDC_Transmit_FS(flashBuf, sizeof(Frame));
+			  HAL_Delay(1);
 		  }
 
 		  // SLOT B read:
@@ -182,6 +183,7 @@ int main(void)
 			  }
 			  if (empty) break;
 			  else CDC_Transmit_FS(flashBuf, sizeof(Frame));
+			  HAL_Delay(1);
 		  }
 	  }
 
@@ -207,7 +209,7 @@ int main(void)
 		  ProgramExecute(CONFIGURATION_PAGE);
 
 		  // Flash slot erase (only in state 6):
-		  if (rocketState >= 6) {
+		  if (rocketState == 6) {
 
 			  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
 			  for (uint16_t j = 0; j < SLOT_PAGE_NUMBER; j += PAGES_IN_BLOCK) {
