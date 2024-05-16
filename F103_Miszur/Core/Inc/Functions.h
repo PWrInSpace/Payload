@@ -9,7 +9,7 @@
 #include <stdbool.h>
 
 #define ADC_SIZE 680
-#define QUE_SIZE 4
+#define QUE_SIZE 3
 #define ADC_NO 3
 #define SLOT_PAGE_NUMBER 26495
 #define SLOT_A_OFFSET 128
