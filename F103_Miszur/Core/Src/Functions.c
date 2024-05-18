@@ -11,7 +11,6 @@ void doMeasurements(Frame* frame) {
 
 	frame->time = dotOneMsTime;
 	frame->state = rocketState;
-	char measr[100];
 
 	for (uint16_t i = 0; i < ADC_SIZE; i ++) {
 
@@ -19,16 +18,12 @@ void doMeasurements(Frame* frame) {
 		while (!tickTime);
 		tickTime = 0;
 
-		HAL_ADC_PollForConversion(&hadc1, 1);
-		frame->adc[i][0] = HAL_ADC_GetValue(&hadc1) / 8;
-		HAL_ADC_PollForConversion(&hadc1, 1);
-		frame->adc[i][1] = HAL_ADC_GetValue(&hadc1) / 8;
-		HAL_ADC_PollForConversion(&hadc1, 1);
-		frame->adc[i][2] = HAL_ADC_GetValue(&hadc1) / 8;
-
-
-		sprintf(measr, "%d;%d;%d;%d;3\n", (int)dotOneMsTime, (int)frame->adc[i][0], (int)frame->adc[i][1], (int)frame->adc[i][2]);
-		CDC_Transmit_FS((uint8_t*) measr, strlen(measr));
+		//HAL_ADC_PollForConversion(&hadc1, 1);
+		frame->adc[i][0] = adctest[0] & 0xff; //HAL_ADC_GetValue(&hadc1) / 8;
+		//HAL_ADC_PollForConversion(&hadc1, 1);
+		frame->adc[i][1] = adctest[1] & 0xff; //HAL_ADC_GetValue(&hadc1) / 8;
+		//HAL_ADC_PollForConversion(&hadc1, 1);
+		frame->adc[i][2] = adctest[2] & 0xff; //HAL_ADC_GetValue(&hadc1) / 8;
 	}
 }
 

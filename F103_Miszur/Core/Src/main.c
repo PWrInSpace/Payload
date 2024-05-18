@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "dma.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -54,6 +55,7 @@
 /* USER CODE BEGIN PV */
 
 Frame frames[QUE_SIZE];
+uint32_t latency, tempDotOneMs;
 
 /* USER CODE END PV */
 
@@ -96,6 +98,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_ADC1_Init();
   MX_SPI1_Init();
   MX_TIM1_Init();
@@ -124,7 +127,7 @@ int main(void)
 	HAL_Delay(3000);
 	uint8_t flashBuf[BUF_SIZE];
 	uint16_t slot_page_offset;
-	HAL_ADC_Start(&hadc1);
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adctest, ADC_NO);
 
   /* USER CODE END 2 */
 
@@ -132,7 +135,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if (0/*rocketState < 6*/) {
+	  if (rocketState < 6) {
+
+		  HAL_ADC_Stop_DMA(&hadc1);
+		  HAL_TIM_Base_Stop_IT(&htim1);
 
 		  for (uint8_t i = 0; i < 3; i++) {
 
@@ -190,7 +196,7 @@ int main(void)
 		  }*/
 	  }
 
-	  if (1/*rocketState >= 6*/) {
+	  if (rocketState >= 6) {
 
 		  // Flash slot change:
 		  /*pageDataRead(CONFIGURATION_PAGE);
@@ -229,16 +235,18 @@ int main(void)
 		  // Save start:
 		  for (uint16_t j = 0; j < SLOT_PAGE_NUMBER; j++) {
 
+			  tempDotOneMs = dotOneMsTime;
 			  for (uint16_t i = 0; i < QUE_SIZE; i ++) {
 
 				  doMeasurements(&frames[i]);
 			  }
+			  latency = dotOneMsTime - tempDotOneMs;
 
 			  for (uint16_t i = 0; i < QUE_SIZE; i++) {
 
 				  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
-				  //loadProgData(0, (uint8_t*) &frames[i], sizeof(Frame));
-				  //ProgramExecute(j + slot_page_offset);
+				  loadProgData(0, (uint8_t*) &frames[i], sizeof(Frame));
+				  ProgramExecute(j + slot_page_offset);
 				  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
 			  }
 		  }
@@ -271,7 +279,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL6;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -286,13 +294,13 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
     Error_Handler();
   }
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC|RCC_PERIPHCLK_USB;
-  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV8;
-  PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_PLL;
+  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV6;
+  PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_PLL_DIV1_5;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
