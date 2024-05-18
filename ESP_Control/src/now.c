@@ -2,6 +2,7 @@
 
 // Adres OBC:
 const uint8_t adressObc[] = {0x04, 0x20, 0x04, 0x20, 0x04, 0x20};
+const uint8_t adressObcRx[] = {0x22, 0x19, 0xfc, 0x3f, 0x1c, 0x19};
 
 bool adressCompare(const uint8_t *addr1, const uint8_t *addr2);
 
@@ -56,7 +57,7 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len) {
         return;
     }
 
-    if (adressCompare(mac, adressObc)) {
+    if (adressCompare(mac, adressObcRx)) {
 
         // if nextSendTime:
         if (len == sizeof(moduleData.obcState)) {
@@ -64,7 +65,7 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len) {
             memcpy((void*) &moduleData.obcState, (uint16_t *)incomingData, sizeof(moduleData.obcState));
 
             // if long time - go to sleep:
-            if (stateInWakenUp()) moduleData.dataToObc.wakenUp = false;
+            if (!stateInWakenUp()) moduleData.dataToObc.wakenUp = false;
             else moduleData.dataToObc.wakenUp = true;
         }
 
