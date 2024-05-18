@@ -19,12 +19,15 @@ void doMeasurements(Frame* frame) {
 		while (!tickTime);
 		tickTime = 0;
 
-		frame->adc[i][0] = adctest[0] / 8;
-		frame->adc[i][1] = adctest[1] / 8;
-		frame->adc[i][2] = adctest[2] / 8;
+		HAL_ADC_PollForConversion(&hadc1, 1);
+		frame->adc[i][0] = HAL_ADC_GetValue(&hadc1) / 8;
+		HAL_ADC_PollForConversion(&hadc1, 1);
+		frame->adc[i][1] = HAL_ADC_GetValue(&hadc1) / 8;
+		HAL_ADC_PollForConversion(&hadc1, 1);
+		frame->adc[i][2] = HAL_ADC_GetValue(&hadc1) / 8;
 
 
-		sprintf(measr, "0;%d;%d;%d;3\n", (int)frame->adc[i][0], (int)frame->adc[i][1], (int)frame->adc[i][2]);
+		sprintf(measr, "%d;%d;%d;%d;3\n", (int)dotOneMsTime, (int)frame->adc[i][0], (int)frame->adc[i][1], (int)frame->adc[i][2]);
 		CDC_Transmit_FS((uint8_t*) measr, strlen(measr));
 	}
 }

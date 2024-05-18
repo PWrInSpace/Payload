@@ -19,7 +19,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
-#include "dma.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -97,7 +96,6 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_ADC1_Init();
   MX_SPI1_Init();
   MX_TIM1_Init();
@@ -126,7 +124,7 @@ int main(void)
 	HAL_Delay(3000);
 	uint8_t flashBuf[BUF_SIZE];
 	uint16_t slot_page_offset;
-	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adctest, ADC_NO);
+	HAL_ADC_Start(&hadc1);
 
   /* USER CODE END 2 */
 
