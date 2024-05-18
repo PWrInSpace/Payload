@@ -134,7 +134,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if (rocketState < 6) {
+	  if (0/*rocketState < 6*/) {
 
 		  for (uint8_t i = 0; i < 3; i++) {
 
@@ -163,7 +163,10 @@ int main(void)
 				  if (flashBuf[i] != 255) empty = 0;
 			  }
 			  if (empty) break;
-			  else CDC_Transmit_FS(flashBuf, sizeof(Frame));
+			  else {
+				  CDC_Transmit_FS(flashBuf, sizeof(Frame));
+
+			  }
 			  HAL_Delay(1);
 		  }
 
@@ -189,7 +192,7 @@ int main(void)
 		  }*/
 	  }
 
-	  if (rocketState >= 6) {
+	  if (1/*rocketState >= 6*/) {
 
 		  // Flash slot change:
 		  /*pageDataRead(CONFIGURATION_PAGE);
@@ -236,8 +239,8 @@ int main(void)
 			  for (uint16_t i = 0; i < QUE_SIZE; i++) {
 
 				  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
-				  loadProgData(0, (uint8_t*) &frames[i], sizeof(Frame));
-				  ProgramExecute(j + slot_page_offset);
+				  //loadProgData(0, (uint8_t*) &frames[i], sizeof(Frame));
+				  //ProgramExecute(j + slot_page_offset);
 				  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
 			  }
 		  }

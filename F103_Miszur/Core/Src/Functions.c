@@ -1,5 +1,7 @@
 #include "Functions.h"
 
+#include "usbd_cdc_if.h"
+
 uint32_t dotOneMsTime;
 volatile bool tickTime;
 uint8_t rocketState;
@@ -9,6 +11,7 @@ void doMeasurements(Frame* frame) {
 
 	frame->time = dotOneMsTime;
 	frame->state = rocketState;
+	char measr[100];
 
 	for (uint16_t i = 0; i < ADC_SIZE; i ++) {
 
@@ -19,6 +22,10 @@ void doMeasurements(Frame* frame) {
 		frame->adc[i][0] = adctest[0] / 8;
 		frame->adc[i][1] = adctest[1] / 8;
 		frame->adc[i][2] = adctest[2] / 8;
+
+
+		sprintf(measr, "0;%d;%d;%d;3\n", (int)frame->adc[i][0], (int)frame->adc[i][1], (int)frame->adc[i][2]);
+		CDC_Transmit_FS((uint8_t*) measr, strlen(measr));
 	}
 }
 
