@@ -33,7 +33,7 @@ void initPeripherals() {
 void measure() {
 
     // Measure battery voltage with ADC:
-    moduleData.dataToObc.power_voltage = adc1_get_raw((adc1_channel_t)ADC1_CHANNEL_6) * 3.3 / 4095 * 2.2;
+    moduleData.dataToObc.power_voltage = (float)adc1_get_raw((adc1_channel_t)ADC1_CHANNEL_6) * 3.3 / 4095.0 * 2.435;
     ESP_LOGI(TAG, "Batt: %f\n", moduleData.dataToObc.power_voltage);
 
     if (moduleData.obcState >= COUNTDOWN && moduleData.obcState <= SECOND_STAGE_RECOVERY) {
