@@ -126,7 +126,6 @@ int main(void)
 
 	HAL_Delay(3000);
 	uint8_t flashBuf[BUF_SIZE];
-	uint16_t slot_page_offset;
 	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) adctest, ADC_NO);
 
   /* USER CODE END 2 */
@@ -153,13 +152,12 @@ int main(void)
 		  while (!txRequest) HAL_Delay(1);
 
 		  // SLOT A read:
-		  slot_page_offset = SLOT_A_OFFSET;
 		  char slot_info[] = "SLOT_A";
 		  CDC_Transmit_FS((uint8_t*) slot_info, strlen(slot_info));
 
 		  for (uint16_t j = 0; j < SLOT_PAGE_NUMBER; j++) {
 
-			  pageDataRead(j + slot_page_offset);
+			  pageDataRead(j);
 			  read(0, flashBuf, BUF_SIZE);
 
 			  _Bool empty = 1;
@@ -173,51 +171,9 @@ int main(void)
 			  }
 			  HAL_Delay(1);
 		  }
-
-		  // SLOT B read:
-		  /*slot_page_offset = SLOT_B_OFFSET;
-		  slot_info[5] = 'B';
-		  HAL_Delay(10);
-		  CDC_Transmit_FS((uint8_t*) slot_info, strlen(slot_info));
-		  HAL_Delay(10);
-
-		  for (uint16_t j = 0; j < SLOT_PAGE_NUMBER; j++) {
-
-			  pageDataRead(j + slot_page_offset);
-			  read(0, flashBuf, BUF_SIZE);
-
-			  _Bool empty = 1;
-			  for (uint16_t i = 0; i < 2048; i++) {
-				  if (flashBuf[i] != 255) empty = 0;
-			  }
-			  if (empty) break;
-			  else CDC_Transmit_FS(flashBuf, sizeof(Frame));
-			  HAL_Delay(1);
-		  }*/
 	  }
 
 	  if (rocketState >= 6) {
-
-		  // Flash slot change:
-		  /*pageDataRead(CONFIGURATION_PAGE);
-		  read(0, flashBuf, BUF_SIZE);
-
-		  uint8_t isSlot_A = flashBuf[0];
-		  flashBuf[0] = !isSlot_A;
-		  blockErase(CONFIGURATION_PAGE);
-
-		  if (isSlot_A) {
-			  // If we are in slot A, save slot B for next reset:
-			  slot_page_offset = SLOT_A_OFFSET;
-		  }
-		  else {
-			  // If we are in slot B, save slot A for next reset:
-			  slot_page_offset = SLOT_B_OFFSET;
-		  }
-		  loadProgData(0, flashBuf, BUF_SIZE);
-		  ProgramExecute(CONFIGURATION_PAGE);
-		  */
-		  slot_page_offset = SLOT_A_OFFSET; // DEBUG ONLY
 
 		  // Flash slot erase (only in state 6):
 		  if (rocketState == 6) {
@@ -225,7 +181,7 @@ int main(void)
 			  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
 			  for (uint16_t j = 0; j < SLOT_PAGE_NUMBER; j += PAGES_IN_BLOCK) {
 
-				  blockErase(j + slot_page_offset);
+				  blockErase(j);
 			  }
 
 			  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
@@ -246,7 +202,7 @@ int main(void)
 
 				  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
 				  loadProgData(0, (uint8_t*) &frames[i], sizeof(Frame));
-				  ProgramExecute(j + slot_page_offset);
+				  ProgramExecute(j);
 				  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
 			  }
 		  }
