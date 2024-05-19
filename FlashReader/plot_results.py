@@ -57,7 +57,7 @@ for i in range(len(x)):
     z[i] *= factor
 
 # sampling rate 10kHz:
-sr = 10000
+sr = 4000
 # sampling interval:
 ts = 1.0/sr
 
@@ -81,8 +81,8 @@ plt.figure(figsize=(12, 6))
 # Time signal:
 plt.subplot(2, 1, 1)
 plt.plot(t, x)
-plt.plot(t, y)
-plt.plot(t, z)
+#plt.plot(t, y)
+#plt.plot(t, z)
 plt.title('x(t)')
 plt.xlabel('Czas [s]')
 plt.ylabel('Amplituda [g]')
@@ -95,7 +95,7 @@ plt.plot(freq, np.abs(Z))
 plt.title('x(f)')
 plt.xlabel('Częstotliwość [Hz]')
 plt.ylabel('PDS [g^2/Hz]')
-plt.xlim(-100, 5000)
+plt.xlim(-50, 2000)
 
 plt.tight_layout()
 plt.show()

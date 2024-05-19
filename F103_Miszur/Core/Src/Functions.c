@@ -19,17 +19,17 @@ void doMeasurements(Frame* frame) {
 		tickTime = 0;
 
 		//HAL_ADC_PollForConversion(&hadc1, 1);
-		frame->adc[i][0] = adctest[0] & 0xff; //HAL_ADC_GetValue(&hadc1) / 8;
+		frame->adc[i][0] = (adctest[0]) /8;// & 0xff; //HAL_ADC_GetValue(&hadc1) / 8;
 		//HAL_ADC_PollForConversion(&hadc1, 1);
-		frame->adc[i][1] = adctest[1] & 0xff; //HAL_ADC_GetValue(&hadc1) / 8;
+		frame->adc[i][1] = (adctest[1]) /8;// & 0xff; //HAL_ADC_GetValue(&hadc1) / 8;
 		//HAL_ADC_PollForConversion(&hadc1, 1);
-		frame->adc[i][2] = adctest[2] & 0xff; //HAL_ADC_GetValue(&hadc1) / 8;
+		frame->adc[i][2] = (adctest[2]) /8;// & 0xff; //HAL_ADC_GetValue(&hadc1) / 8;
 	}
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
-	if (htim->Instance == TIM1) {
+	if (htim->Instance == TIM2) {
 		tickTime = 1;
 		dotOneMsTime += 1;
 	}

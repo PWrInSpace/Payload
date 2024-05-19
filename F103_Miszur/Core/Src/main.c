@@ -101,17 +101,17 @@ int main(void)
   MX_DMA_Init();
   MX_ADC1_Init();
   MX_SPI1_Init();
-  MX_TIM1_Init();
   MX_USART1_UART_Init();
   MX_USB_DEVICE_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
   	// Init Everything in MCU:
 	HAL_Delay(900);
 	HAL_ADC_Start(&hadc1);
-	HAL_TIM_Base_Init(&htim1);
-	HAL_TIM_Base_MspInit(&htim1);
-	HAL_TIM_Base_Start_IT(&htim1);
+	HAL_TIM_Base_Init(&htim2);
+	HAL_TIM_Base_MspInit(&htim2);
+	HAL_TIM_Base_Start_IT(&htim2);
 	HAL_UART_Receive_IT(&huart1, &rocketState, 1);
 
 	rocketState = 0;
@@ -138,7 +138,7 @@ int main(void)
 	  if (rocketState < 6) {
 
 		  HAL_ADC_Stop_DMA(&hadc1);
-		  HAL_TIM_Base_Stop_IT(&htim1);
+		  HAL_TIM_Base_Stop_IT(&htim2);
 
 		  for (uint8_t i = 0; i < 3; i++) {
 
