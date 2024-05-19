@@ -56,8 +56,8 @@ for i in range(len(x)):
     y[i] *= factor
     z[i] *= factor
 
-# sampling rate 10kHz:
-sr = 10000
+# sampling rate 4kHz:
+sr = 4000
 # sampling interval:
 ts = 1.0/sr
 
@@ -95,7 +95,7 @@ plt.plot(freq, np.abs(Z))
 plt.title('x(f)')
 plt.xlabel('Częstotliwość [Hz]')
 plt.ylabel('PDS [g^2/Hz]')
-plt.xlim(-100, 5000)
+plt.xlim(-50, 2000)
 
 plt.tight_layout()
 plt.show()

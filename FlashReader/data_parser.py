@@ -25,7 +25,7 @@ def stream_to_frames(stream) -> Frame:
             continue
         frames_list.append(frame)
 
-        frame_time += 0.0001
+        frame_time += 0.00025
 
     return frames_list
 
