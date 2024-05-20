@@ -108,7 +108,6 @@ int main(void)
 
   	// Init Everything in MCU:
 	HAL_Delay(900);
-	HAL_ADC_Start(&hadc1);
 	HAL_TIM_Base_Init(&htim2);
 	HAL_TIM_Base_MspInit(&htim2);
 	HAL_TIM_Base_Start_IT(&htim2);
