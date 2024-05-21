@@ -133,7 +133,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if (0/*rocketState < 6*/) {
+	  if (rocketState < 6) {
 
 		  HAL_ADC_Stop_DMA(&hadc1);
 		  HAL_TIM_Base_Stop_IT(&htim2);
@@ -172,7 +172,7 @@ int main(void)
 		  }
 	  }
 
-	  if (1/*rocketState >= 6*/) {
+	  if (rocketState >= 6) {
 
 		  // Flash slot erase (only in state 6):
 		  if (rocketState == 6) {
@@ -201,8 +201,8 @@ int main(void)
 
 				  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
 				  CDC_Transmit_FS((uint8_t*) &frames[i], sizeof(Frame));
-				  //loadProgData(0, (uint8_t*) &frames[i], sizeof(Frame));
-				  //ProgramExecute(j);
+				  loadProgData(0, (uint8_t*) &frames[i], sizeof(Frame));
+				  ProgramExecute(j);
 				  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
 			  }
 		  }
