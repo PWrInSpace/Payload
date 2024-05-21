@@ -133,7 +133,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if (rocketState < 6) {
+	  if (0/*rocketState < 6*/) {
 
 		  HAL_ADC_Stop_DMA(&hadc1);
 		  HAL_TIM_Base_Stop_IT(&htim2);
@@ -151,8 +151,8 @@ int main(void)
 		  while (!txRequest) HAL_Delay(1);
 
 		  // SLOT A read:
-		  char slot_info[] = "SLOT_A";
-		  CDC_Transmit_FS((uint8_t*) slot_info, strlen(slot_info));
+		  //char slot_info[] = "SLOT_A";
+		  //CDC_Transmit_FS((uint8_t*) slot_info, strlen(slot_info));
 
 		  for (uint16_t j = 0; j < SLOT_PAGE_NUMBER; j++) {
 
@@ -172,7 +172,7 @@ int main(void)
 		  }
 	  }
 
-	  if (rocketState >= 6) {
+	  if (1/*rocketState >= 6*/) {
 
 		  // Flash slot erase (only in state 6):
 		  if (rocketState == 6) {
@@ -200,8 +200,9 @@ int main(void)
 			  for (uint16_t i = 0; i < QUE_SIZE; i++) {
 
 				  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
-				  loadProgData(0, (uint8_t*) &frames[i], sizeof(Frame));
-				  ProgramExecute(j);
+				  CDC_Transmit_FS((uint8_t*) &frames[i], sizeof(Frame));
+				  //loadProgData(0, (uint8_t*) &frames[i], sizeof(Frame));
+				  //ProgramExecute(j);
 				  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);
 			  }
 		  }
