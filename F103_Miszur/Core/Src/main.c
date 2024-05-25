@@ -154,6 +154,7 @@ int main(void)
 		  //char slot_info[] = "SLOT_A";
 		  //CDC_Transmit_FS((uint8_t*) slot_info, strlen(slot_info));
 
+		  int8_t tries = 10;
 		  for (uint16_t j = 0; j < SLOT_PAGE_NUMBER; j++) {
 
 			  pageDataRead(j);
@@ -163,10 +164,13 @@ int main(void)
 			  for (uint16_t i = 0; i < 2048; i++) {
 				  if (flashBuf[i] != 255) empty = 0;
 			  }
-			  if (empty) break;
+			  if (empty) {
+				  tries--;
+				  if (tries <= 0) break;
+			  }
 			  else {
 				  CDC_Transmit_FS(flashBuf, sizeof(Frame));
-
+				  tries = 10;
 			  }
 			  HAL_Delay(1);
 		  }
