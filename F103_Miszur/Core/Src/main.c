@@ -108,7 +108,6 @@ int main(void)
 
   	// Init Everything in MCU:
 	HAL_Delay(900);
-	HAL_ADC_Start(&hadc1);
 	HAL_TIM_Base_Init(&htim2);
 	HAL_TIM_Base_MspInit(&htim2);
 	HAL_TIM_Base_Start_IT(&htim2);
@@ -152,9 +151,10 @@ int main(void)
 		  while (!txRequest) HAL_Delay(1);
 
 		  // SLOT A read:
-		  char slot_info[] = "SLOT_A";
-		  CDC_Transmit_FS((uint8_t*) slot_info, strlen(slot_info));
+		  //char slot_info[] = "SLOT_A";
+		  //CDC_Transmit_FS((uint8_t*) slot_info, strlen(slot_info));
 
+		  int8_t tries = 10;
 		  for (uint16_t j = 0; j < SLOT_PAGE_NUMBER; j++) {
 
 			  pageDataRead(j);
@@ -164,10 +164,13 @@ int main(void)
 			  for (uint16_t i = 0; i < 2048; i++) {
 				  if (flashBuf[i] != 255) empty = 0;
 			  }
-			  if (empty) break;
+			  if (empty) {
+				  tries--;
+				  if (tries <= 0) break;
+			  }
 			  else {
 				  CDC_Transmit_FS(flashBuf, sizeof(Frame));
-
+				  tries = 10;
 			  }
 			  HAL_Delay(1);
 		  }
@@ -201,6 +204,7 @@ int main(void)
 			  for (uint16_t i = 0; i < QUE_SIZE; i++) {
 
 				  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 0);
+				  CDC_Transmit_FS((uint8_t*) &frames[i], sizeof(Frame));
 				  loadProgData(0, (uint8_t*) &frames[i], sizeof(Frame));
 				  ProgramExecute(j);
 				  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, 1);

@@ -18,6 +18,7 @@ class Frame:
         return f"{self.time_us}, {self.x}, {self.y}, {self.z}, {self.state}"
 
 frames = []
+threshold = 0
 
 # Read the csv given as argument:
 with open(sys.argv[1], newline='') as csvfile:
@@ -30,18 +31,21 @@ with open(sys.argv[1], newline='') as csvfile:
         frame.y =       int(row[2])
         frame.z =       int(row[3])
         frame.state =   int(row[4])
+        #if frame.x > threshold and frame.y > threshold and frame.z > threshold:
         frames.append(frame)
 
 t = []
 x = []
 y = []
 z = []
+state = []
 
 for frame in frames:
     t.append(frame.time_us)
     x.append(frame.x)
     y.append(frame.y)
     z.append(frame.z)
+    state.append(frame.state)
 
 # Remove constant part:
 x = x - np.mean(x)
@@ -83,6 +87,7 @@ plt.subplot(2, 1, 1)
 plt.plot(t, x)
 plt.plot(t, y)
 plt.plot(t, z)
+plt.plot(t, state)
 plt.title('x(t)')
 plt.xlabel('Czas [s]')
 plt.ylabel('Amplituda [g]')
@@ -95,7 +100,7 @@ plt.plot(freq, np.abs(Z))
 plt.title('x(f)')
 plt.xlabel('Częstotliwość [Hz]')
 plt.ylabel('PDS [g^2/Hz]')
-plt.xlim(-50, 2000)
+plt.xlim(-10, 2000)
 
 plt.tight_layout()
 plt.show()

@@ -18,12 +18,9 @@ void doMeasurements(Frame* frame) {
 		while (!tickTime);
 		tickTime = 0;
 
-		//HAL_ADC_PollForConversion(&hadc1, 1);
-		frame->adc[i][0] = (adctest[0]) /8;// & 0xff; //HAL_ADC_GetValue(&hadc1) / 8;
-		//HAL_ADC_PollForConversion(&hadc1, 1);
-		frame->adc[i][1] = (adctest[1]) /8;// & 0xff; //HAL_ADC_GetValue(&hadc1) / 8;
-		//HAL_ADC_PollForConversion(&hadc1, 1);
-		frame->adc[i][2] = (adctest[2]) /8;// & 0xff; //HAL_ADC_GetValue(&hadc1) / 8;
+		frame->adc[i][0] = (adctest[0]) / 16;
+		frame->adc[i][1] = (adctest[1]) / 16;
+		frame->adc[i][2] = (adctest[2]) / 16;
 	}
 }
 

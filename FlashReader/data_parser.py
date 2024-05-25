@@ -8,7 +8,10 @@ def stream_to_frames(stream) -> Frame:
 
     global frame_time
     format_string = "<I2040B4B"
-    decoded_data = struct.unpack(format_string, stream)
+    try:
+        decoded_data = struct.unpack(format_string, stream)
+    except(struct.error):
+        return []
 
     frames_list = []
 
@@ -38,7 +41,7 @@ def read_binary_file(file_path) -> dict:
         
         file_content = file.read()
 
-    if file_content[0:6] == b"SLOT_A":
+    if True: # file_content[0:6] == b"SLOT_A":
         
         current_slot = "SLOT_A"
         data_dict[current_slot] = []
