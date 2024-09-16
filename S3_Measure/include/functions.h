@@ -1,7 +1,6 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-#include <Arduino.h>
 #include "FS.h"
 #include "SPIFFS.h"
 #include "driver/adc.h"
@@ -17,5 +16,6 @@ void writeData();
 void readData();
 void uartCommTask();
 void flashTask();
+void blinkNTimes(uint8_t n);
 
 #endif

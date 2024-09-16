@@ -8,26 +8,24 @@ bool isWritingMode() { return 1/*glob.rotcketState >= 6*/; };
 
 void writeData() {
 
-    Serial.println("SER1");
-    adc1_config_width(ADC_WIDTH_BIT_12);
-    adc1_config_channel_atten(ADC1_CHANNEL_0, ADC_ATTEN_DB_12);
-    adc1_config_channel_atten(ADC1_CHANNEL_3, ADC_ATTEN_DB_12);
-    adc1_config_channel_atten(ADC1_CHANNEL_6, ADC_ATTEN_DB_12);
+    blinkNTimes(3);
 
+    adc1_config_width(ADC_WIDTH_BIT_12);
+    adc1_config_channel_atten(ADC_X_CHANNEL, ADC_ATTEN_DB_12);
+    adc1_config_channel_atten(ADC_Y_CHANNEL, ADC_ATTEN_DB_12);
+    adc1_config_channel_atten(ADC_Z_CHANNEL, ADC_ATTEN_DB_12);
+
+    File file;
     if (/*glob.rotcketState ==*/ 6) {
 
         // Remove old data:
-        Serial.println("SER2");
-        File file2;
-        file2 = SPIFFS.open("/data.bin", "w", true);
-        Serial.println("SER3");
-        file2.close();
-        Serial.println("SER4");
+        SPIFFS.remove("/data.bin");
+        file = SPIFFS.open("/data.bin", "w", true);
+        file.close();
     }
 
     Frame frame;
     uint32_t timer2;
-    Serial.println("SER5");
 
     while(1) {
 
@@ -36,16 +34,23 @@ void writeData() {
 
             timer2 = micros();
 
-            frame.adcX[i] = adc1_get_raw(ADC1_CHANNEL_0) >> 4;
-            frame.adcY[i] = adc1_get_raw(ADC1_CHANNEL_3) >> 4;
-            frame.adcZ[i] = adc1_get_raw(ADC1_CHANNEL_6) >> 4;
+            frame.adcX[i] = adc1_get_raw(ADC_X_CHANNEL) >> 4;
+            frame.adcY[i] = adc1_get_raw(ADC_Y_CHANNEL) >> 4;
+            frame.adcZ[i] = adc1_get_raw(ADC_Z_CHANNEL) >> 4;
 
             while (micros() - timer2 < 100);
         }
         // Push to save que:
-        Serial.println("SER6");
-        xQueueSend(glob.dataFramesFifo, &frame, portMAX_DELAY);
-        Serial.println(uxQueueMessagesWaiting(glob.dataFramesFifo));
+        //xQueueSend(glob.dataFramesFifo, &frame, portMAX_DELAY);
+        //Serial.println(uxQueueMessagesWaiting(glob.dataFramesFifo));
+
+        digitalWrite(LED_PIN, 0);
+        file = SPIFFS.open("/data.bin", "a", true);
+
+        file.write((uint8_t*) &frame, sizeof(frame));
+
+        file.close();
+        digitalWrite(LED_PIN, 1);
 
         vTaskDelay(1);
     }
@@ -80,6 +85,8 @@ void readData() {
     server.begin();
     Serial.println("server on");
 
+    blinkNTimes(2);
+
     while(1) {
         vTaskDelay(10);
     }
@@ -108,14 +115,15 @@ void flashTask() {
 
     File file;
 
-    while (glob.rotcketState < 6) {
+    /*while (glob.rotcketState < 6) {
         vTaskDelay(10 / portTICK_PERIOD_MS);
-    }
+    }*/
 
     while (1) {
 
         if (uxQueueMessagesWaiting(glob.dataFramesFifo) > 2) {
 
+            digitalWrite(LED_PIN, 0);
             file = SPIFFS.open("/data.bin", "a", true);
 
             while (uxQueueMessagesWaiting(glob.dataFramesFifo)) {
@@ -126,7 +134,21 @@ void flashTask() {
             }
 
             file.close();
+            digitalWrite(LED_PIN, 1);
         }
         vTaskDelay(10 / portTICK_PERIOD_MS);
+    }
+}
+
+/*************************************************************************************************/
+
+void blinkNTimes(uint8_t n) {
+
+    for (uint8_t i = 0; i < n; i++) {
+
+        digitalWrite(LED_PIN, 0);
+        vTaskDelay(100);
+        digitalWrite(LED_PIN, 1);
+        vTaskDelay(100);
     }
 }
