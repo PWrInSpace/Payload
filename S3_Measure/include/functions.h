@@ -2,7 +2,7 @@
 #define FUNCTIONS_H
 
 #include "FS.h"
-#include "SPIFFS.h"
+#include <LittleFS.h>
 #include "driver/adc.h"
 #include "esp_adc_cal.h"
 #include "ESPAsyncWebServer.h"

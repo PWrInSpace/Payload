@@ -19,8 +19,8 @@ void writeData() {
     if (/*glob.rotcketState ==*/ 6) {
 
         // Remove old data:
-        SPIFFS.remove("/data.bin");
-        file = SPIFFS.open("/data.bin", "w", true);
+        LittleFS.remove("/data.bin");
+        file = LittleFS.open("/data.bin", "w", true);
         file.close();
     }
 
@@ -45,7 +45,7 @@ void writeData() {
         //Serial.println(uxQueueMessagesWaiting(glob.dataFramesFifo));
 
         digitalWrite(LED_PIN, 0);
-        file = SPIFFS.open("/data.bin", "a", true);
+        file = LittleFS.open("/data.bin", "a", true);
 
         file.write((uint8_t*) &frame, sizeof(frame));
 
@@ -79,7 +79,7 @@ void readData() {
 
     server.on("/data.bin", HTTP_GET, [](AsyncWebServerRequest *request) {
 
-        request->send(SPIFFS, "/data.bin", String());
+        request->send(LittleFS, "/data.bin", String());
     });
 
     server.begin();
@@ -124,7 +124,7 @@ void flashTask() {
         if (uxQueueMessagesWaiting(glob.dataFramesFifo) > 2) {
 
             digitalWrite(LED_PIN, 0);
-            file = SPIFFS.open("/data.bin", "a", true);
+            file = LittleFS.open("/data.bin", "a", true);
 
             while (uxQueueMessagesWaiting(glob.dataFramesFifo)) {
 

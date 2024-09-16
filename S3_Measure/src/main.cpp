@@ -7,9 +7,9 @@ void setup() {
     vTaskDelay(100);
 
     // Inits:
-    SPIFFS.begin(true);
-    uint32_t totalBytes = SPIFFS.totalBytes();
-    uint32_t usedBytes = SPIFFS.usedBytes();
+    LittleFS.begin(true);
+    uint32_t totalBytes = LittleFS.totalBytes();
+    uint32_t usedBytes = LittleFS.usedBytes();
     Serial.println("Free space (MB):");
     Serial.println((totalBytes - usedBytes)/1000000.0);
 
