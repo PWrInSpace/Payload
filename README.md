@@ -3,7 +3,7 @@
 This is a payload repository. It contains 3 subprojects:
  - Payload Control firmware,
  - Payload Measure firmware,
- - DraPaViz data manipulation software.
+ - DataVisualizer data manipulation software.
 
 ## Payload Control firmware
 
@@ -19,8 +19,20 @@ Payload Measure firmware is a STM32 project written in Cube IDE. It uses ADC and
  - Write mode (high state - write data, low state - read data),
  - State number (UART Rx).
 
-## DraPaViz
+## DataVisualizer
 
-DraPaViz is `Drgania`, `Payload` and `Vizulatization` software written in python.
+DataVisualizer is a tool designed for visualization of vibration data downloaded from ESP32S3 measurement board with the WiFi.
 
-TODO
+Usage:
+1. `main.py` - convert binary data into csv. Eg:
+```
+./main.py data.bin
+```
+2. `plot_results.py` - plot the csv data with Fourier and G_RMS. Eg:
+```
+plot_results.py payload_data_2024-09-22_154213.csv
+```
+
+Requires:
+ - numpy,
+ - matplotlib.
