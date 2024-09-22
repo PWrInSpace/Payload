@@ -15,7 +15,8 @@ bool isWritingMode();
 void writeData();
 void readData();
 void uartCommTask();
-void flashTask();
 void blinkNTimes(uint8_t n);
+
+extern bool forceDebugWrite;
 
 #endif

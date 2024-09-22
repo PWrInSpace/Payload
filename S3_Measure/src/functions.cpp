@@ -1,8 +1,12 @@
 #include "functions.h"
 
 Globals glob;
+bool forceDebugWrite = false;
 
-bool isWritingMode() { return 1/*glob.rotcketState >= 6*/; };
+bool isWritingMode() {
+
+    return (glob.rotcketState >= 6) || forceDebugWrite;
+};
 
 /*************************************************************************************************/
 
@@ -16,10 +20,9 @@ void writeData() {
     adc1_config_channel_atten(ADC_Z_CHANNEL, ADC_ATTEN_DB_12);
 
     File file;
-    if (/*glob.rotcketState ==*/ 6) {
+    if ((glob.rotcketState == 6) || forceDebugWrite) {
 
         // Remove old data:
-        LittleFS.remove("/data.bin");
         file = LittleFS.open("/data.bin", "w", true);
         file.close();
     }
@@ -40,15 +43,11 @@ void writeData() {
 
             while (micros() - timer2 < 100);
         }
-        // Push to save que:
-        //xQueueSend(glob.dataFramesFifo, &frame, portMAX_DELAY);
-        //Serial.println(uxQueueMessagesWaiting(glob.dataFramesFifo));
 
+        // Save the data (no que seems faster):
         digitalWrite(LED_PIN, 0);
         file = LittleFS.open("/data.bin", "a", true);
-
         file.write((uint8_t*) &frame, sizeof(frame));
-
         file.close();
         digitalWrite(LED_PIN, 1);
 
@@ -104,39 +103,9 @@ void uartCommTask() {
         if (Serial1.available()) {
             String rxData = Serial1.readString();
             glob.rotcketState = rxData.toInt();
+            Serial.printf("Cuurent state: %d", glob.rotcketState);
         }
         vTaskDelay(10);
-    }
-}
-
-/*************************************************************************************************/
-
-void flashTask() {
-
-    File file;
-
-    /*while (glob.rotcketState < 6) {
-        vTaskDelay(10 / portTICK_PERIOD_MS);
-    }*/
-
-    while (1) {
-
-        if (uxQueueMessagesWaiting(glob.dataFramesFifo) > 2) {
-
-            digitalWrite(LED_PIN, 0);
-            file = LittleFS.open("/data.bin", "a", true);
-
-            while (uxQueueMessagesWaiting(glob.dataFramesFifo)) {
-
-                Frame tempData;
-                xQueueReceive(glob.dataFramesFifo, &tempData, portMAX_DELAY);
-                file.write((uint8_t*) &tempData, sizeof(tempData));
-            }
-
-            file.close();
-            digitalWrite(LED_PIN, 1);
-        }
-        vTaskDelay(10 / portTICK_PERIOD_MS);
     }
 }
 
@@ -149,6 +118,6 @@ void blinkNTimes(uint8_t n) {
         digitalWrite(LED_PIN, 0);
         vTaskDelay(100);
         digitalWrite(LED_PIN, 1);
-        vTaskDelay(100);
+        vTaskDelay(200);
     }
 }

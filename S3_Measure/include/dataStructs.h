@@ -10,7 +10,7 @@ struct Globals {
 };
 
 #define DATA_IN_FRAME 10000
-#define FRAMES_IN_QUE 5
+
 
 struct Frame {
 
