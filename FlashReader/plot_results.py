@@ -54,14 +54,14 @@ z = z - np.mean(z)
 
 # Change raw adc value to acceleration:
 # For VSA004 0.304 and for ADXL 0.647.
-factor = 0.647
+factor = 0.304
 for i in range(len(x)):
     x[i] *= factor
     y[i] *= factor
     z[i] *= factor
 
 # sampling rate 4kHz:
-sr = 4000
+sr = 10000
 # sampling interval:
 ts = 1.0/sr
 
@@ -100,7 +100,7 @@ plt.plot(freq, np.abs(Z))
 plt.title('x(f)')
 plt.xlabel('Częstotliwość [Hz]')
 plt.ylabel('PDS [g^2/Hz]')
-plt.xlim(-10, 2000)
+plt.xlim(-10, 5000)
 
 plt.tight_layout()
 plt.show()

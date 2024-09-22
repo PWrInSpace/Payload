@@ -4,10 +4,10 @@ import struct
 
 frame_time = 0
 
-def stream_to_frames(stream) -> Frame:
+def stream_to_frames(stream) -> list:
 
     global frame_time
-    format_string = "<I2040B4B"
+    format_string = "<I30000B4B"
     try:
         decoded_data = struct.unpack(format_string, stream)
     except(struct.error):
@@ -15,7 +15,7 @@ def stream_to_frames(stream) -> Frame:
 
     frames_list = []
 
-    for i in range(680):
+    for i in range(10000):
         frame = Frame()
 
         frame.time_us = frame_time
@@ -28,41 +28,23 @@ def stream_to_frames(stream) -> Frame:
             continue
         frames_list.append(frame)
 
-        frame_time += 0.00025
+        frame_time += 0.0001
 
     return frames_list
 
-def read_binary_file(file_path) -> dict:
+def read_binary_file(file_path) -> list:
 
-    data_dict = {}
-    current_slot = None
+    frames_list = []
+    chunk_size = 30008
 
     with open(file_path, 'rb') as file:
-        
-        file_content = file.read()
 
-    if True: # file_content[0:6] == b"SLOT_A":
-        
-        current_slot = "SLOT_A"
-        data_dict[current_slot] = []
-        file_content = file_content[6:]
-        print("Parsing SLOT_A")
+        while True:
 
-        while len(file_content) > 0:
+            chunk = file.read(chunk_size)
+            if not chunk:
+                break
 
-            if file_content[0:6] == b"SLOT_B":
-                current_slot = "SLOT_B"
-                data_dict[current_slot] = []
-                file_content = file_content[6:]
-                print("Parsing SLOT_B")
-            
-            else:
-                stream = file_content[0:2048]
-                measurements_list = stream_to_frames(stream)
-                data_dict[current_slot].extend(measurements_list)
-                file_content = file_content[2048:]
-    
-    else:
-        print("Error, no SLOT_A")
+            frames_list.extend(stream_to_frames(chunk))
 
-    return data_dict
+    return frames_list
