@@ -15,14 +15,19 @@ def stream_to_frames(stream) -> list:
 
     frames_list = []
 
+    x_list = decoded_data[1:10001]
+    y_list = decoded_data[10001:20001]
+    z_list = decoded_data[20001:30001]
+    state = decoded_data[-4]
+
     for i in range(10000):
         frame = Frame()
 
         frame.time_us = frame_time
-        frame.x = decoded_data[i * 3 + 1]
-        frame.y = decoded_data[i * 3 + 2]
-        frame.z = decoded_data[i * 3 + 3]
-        frame.state = decoded_data[-4]
+        frame.x = x_list[i]
+        frame.y = y_list[i]
+        frame.z = z_list[i]
+        frame.state = state
 
         if frame.state == 255:
             continue
