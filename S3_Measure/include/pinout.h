@@ -10,7 +10,7 @@
 #define BUTTON_PIN 0
 #define LED_PIN 4
 
-#define TX_COMM_PIN -1
+#define TX_COMM_PIN 5
 #define RX_COMM_PIN 6
 
 #endif

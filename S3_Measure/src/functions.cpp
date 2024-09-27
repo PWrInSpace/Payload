@@ -5,7 +5,7 @@ bool forceDebugWrite = false;
 
 bool isWritingMode() {
 
-    return (glob.rotcketState >= 6) || forceDebugWrite;
+    return (glob.rotcketState >= 6 && glob.rotcketState < 10) || forceDebugWrite;
 };
 
 /*************************************************************************************************/
@@ -96,13 +96,14 @@ void readData() {
 void uartCommTask() {
 
     Serial1.begin(115200, SERIAL_8N1, RX_COMM_PIN, TX_COMM_PIN);
-    Serial1.setTimeout(10);
+    Serial1.setTimeout(100);
 
     while(1) {
 
         if (Serial1.available()) {
-            String rxData = Serial1.readString();
-            glob.rotcketState = rxData.toInt();
+            uint8_t readenByte;
+            Serial1.readBytes(&readenByte, 1);
+            if (readenByte > 0 && readenByte < 13) glob.rotcketState = readenByte;
             Serial.printf("Cuurent state: %d", glob.rotcketState);
         }
         vTaskDelay(10);
